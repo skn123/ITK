@@ -32,9 +32,7 @@
 
 namespace itk
 {
-/**
- * Constructor
- */
+
 template <typename TFixedImage,
           typename TMovingImage,
           typename TOutputTransform,
@@ -133,9 +131,6 @@ SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform, TVirtual
   }
 }
 
-/*
- * Start the optimization at each level.  We just do a basic gradient descent operation.
- */
 template <typename TFixedImage,
           typename TMovingImage,
           typename TOutputTransform,
@@ -325,7 +320,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
 
   if (multiMetric)
   {
-    for (SizeValueType n = 0; n < multiMetric->GetNumberOfMetrics(); n++)
+    for (SizeValueType n = 0; n < multiMetric->GetNumberOfMetrics(); ++n)
     {
       if (multiMetric->GetMetricQueue()[n]->GetMetricCategory() ==
           ObjectToObjectMetricBaseTemplateEnums::MetricCategory::POINT_SET_METRIC)
@@ -621,7 +616,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
     typename MetricDerivativeType::iterator it;
     for (it = metricDerivative.begin(); it != metricDerivative.end(); it += ImageDimension)
     {
-      for (unsigned int d = 0; d < ImageDimension; d++)
+      for (unsigned int d = 0; d < ImageDimension; ++d)
       {
         *(it + d) *= this->m_OptimizerWeights[d];
       }
@@ -643,7 +638,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
   for (ItG.GoToBegin(); !ItG.IsAtEnd(); ++ItG)
   {
     DisplacementVectorType displacement;
-    for (SizeValueType d = 0; d < ImageDimension; d++)
+    for (SizeValueType d = 0; d < ImageDimension; ++d)
     {
       displacement[d] = metricDerivative[count++];
     }
@@ -672,7 +667,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
     DisplacementVectorType vector = ItF.Get();
 
     RealType localNorm = 0;
-    for (SizeValueType d = 0; d < ImageDimension; d++)
+    for (SizeValueType d = 0; d < ImageDimension; ++d)
     {
       localNorm += itk::Math::sqr(vector[d] / spacing[d]);
     }
@@ -758,7 +753,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
     VectorNeighborhoodOperatorImageFilter<DisplacementFieldType, DisplacementFieldType>;
   typename GaussianSmoothingSmootherType::Pointer smoother = GaussianSmoothingSmootherType::New();
 
-  for (SizeValueType d = 0; d < ImageDimension; d++)
+  for (SizeValueType d = 0; d < ImageDimension; ++d)
   {
     // smooth along this dimension
     gaussianSmoothingOperator.SetDirection(d);
@@ -806,7 +801,7 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
   {
     typename DisplacementFieldType::IndexType index = ItF.GetIndex();
     bool                                      isOnBoundary = false;
-    for (unsigned int d = 0; d < ImageDimension; d++)
+    for (unsigned int d = 0; d < ImageDimension; ++d)
     {
       if (index[d] == startIndex[d] || index[d] == static_cast<IndexValueType>(size[d]) - startIndex[d] - 1)
       {
@@ -827,9 +822,6 @@ typename SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform,
   return smoothField;
 }
 
-/*
- * Start the registration
- */
 template <typename TFixedImage,
           typename TMovingImage,
           typename TOutputTransform,
@@ -873,9 +865,6 @@ SyNImageRegistrationMethod<TFixedImage, TMovingImage, TOutputTransform, TVirtual
   this->GetTransformOutput()->Set(this->m_OutputTransform);
 }
 
-/*
- * PrintSelf
- */
 template <typename TFixedImage,
           typename TMovingImage,
           typename TOutputTransform,

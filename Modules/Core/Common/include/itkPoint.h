@@ -135,18 +135,7 @@ public:
     return same;
   }
 
-  /** Compare two points for inequality. */
-  bool
-  operator!=(const Self & pt) const
-  {
-    bool same = true;
-
-    for (unsigned int i = 0; i < NPointDimension && same; ++i)
-    {
-      same = (Math::ExactlyEquals((*this)[i], pt[i]));
-    }
-    return !same;
-  }
+  ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(Self);
 
   /** Point operator+=.  Adds a vector to the current point. */
   const Self &
@@ -357,6 +346,26 @@ inline void
 swap(Point<TCoordRep, NPointDimension> & a, Point<TCoordRep, NPointDimension> & b)
 {
   a.swap(b);
+}
+
+
+/** Makes a Point object, having the specified values as coordinates. */
+template <typename TValue, typename... TVariadic>
+auto
+MakePoint(const TValue firstValue, const TVariadic... otherValues)
+{
+  // Assert that the other values have the same type as the first value.
+  const auto assertSameType = [](const auto value) {
+    static_assert(std::is_same<decltype(value), const TValue>::value, "Each value must have the same type!");
+    return true;
+  };
+  const bool assertions[] = { true, assertSameType(otherValues)... };
+  (void)assertions;
+  (void)assertSameType;
+
+  constexpr unsigned                  dimension{ 1 + sizeof...(TVariadic) };
+  const std::array<TValue, dimension> stdArray{ { firstValue, otherValues... } };
+  return Point<TValue, dimension>{ stdArray };
 }
 
 } // end namespace itk

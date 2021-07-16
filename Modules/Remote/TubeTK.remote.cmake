@@ -48,5 +48,5 @@ itk_fetch_module(TubeTK
   "http://www.tubetk.org"
   MODULE_COMPLIANCE_LEVEL 3
   GIT_REPOSITORY ${git_protocol}://github.com/InsightSoftwareConsortium/ITKTubeTK.git
-  GIT_TAG 9841c28c8287f04269ceecf3560f7659d77f9643
+  GIT_TAG 0f06a9b36ae2a43a9c453ace9c40ff48a313cdb3
   )

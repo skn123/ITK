@@ -162,8 +162,8 @@ namespace itk
  * MSVC++ 14.16 _MSC_VER == 1916 (Visual Studio 2017 version 15.9)
  * MSVC++ 14.2 _MSC_VER == 1920 (Visual Studio 2019 Version 16.0)
  */
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-#  error "Visual Studio < 2015 is not supported under ITKv5"
+#if defined(_MSC_VER) && (_MSC_VER < 1910)
+#  error "Visual Studio < 2017 is not supported under ITKv5.3"
 #endif
 #if defined(__SUNPRO_CC) && (__SUNPRO_CC < 0x5140)
 #  error "SUNPro C++ < 5.14.0 is not supported under ITKv5 and above"
@@ -178,8 +178,8 @@ namespace itk
 #  error "The MetroWerks compiler is not supported in ITKv4 and above"
 #endif
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) &&                                          \
-  ((__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 8)))
-#  error "GCC < 4.8 is not supported under ITKv5"
+  ((__GNUC__ < 5) || ((__GNUC__ == 5) && (__GNUC_MINOR__ < 1)))
+#  error "GCC < 5.1 is not supported under ITKv5.3"
 #endif
 #if defined(__sgi)
 // This is true for IRIX 6.5.18m with MIPSPro 7.3.1.3m.
@@ -188,14 +188,14 @@ namespace itk
 #  error "The SGI compiler is not supported under ITKv4 and above"
 #endif
 #if defined(__APPLE__)
-#  if defined(__clang__) && (__cplusplus < 201103L)
-#    error "Apple LLVM < 5.0 (clang < 3.3) is not supported under ITKv5"
+#  if defined(__clang__) && (__cplusplus < 201402L)
+#    error "Apple LLVM < 5.1 (clang < 3.4) is not supported under ITKv5.3"
 #  endif
-#elif defined(__clang__) && ((__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 3)))
-#  error "Clang < 3.3 is not supported under ITKv5"
+#elif defined(__clang__) && ((__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 4)))
+#  error "Clang < 3.4 is not supported under ITKv5.3"
 #endif
-#if defined(__INTEL_COMPILER) && (__INTEL_COMPILER < 1504)
-#  error "Intel C++ < 15.0.4 is not supported under ITKv5"
+#if defined(__INTEL_COMPILER) && (__INTEL_COMPILER < 1700)
+#  error "Intel C++ < 17.0 is not supported under ITKv5.3"
 #endif
 
 // Setup symbol exports
@@ -392,6 +392,30 @@ namespace itk
 #else
 #  define ITK_DISALLOW_COPY_AND_ASSIGN(TypeName)                                                                       \
     static_assert(false, "Replace deprecated ITK_DISALLOW_COPY_AND_ASSIGN with modern ITK_DISALLOW_COPY_AND_MOVE")
+#endif
+
+
+// When ITK_EXPERIMENTAL_CXX20_REWRITTEN_UNEQUAL_OPERATOR is defined, ITK uses
+// the ability for operator!= to be rewritten automatically in terms of
+// operator==, as introduced with C++20. This macro is experimental. It may be
+// modified, renamed, or removed without backward compatibility support.
+#if __cplusplus >= 202002L
+#  define ITK_EXPERIMENTAL_CXX20_REWRITTEN_UNEQUAL_OPERATOR
+#endif
+
+// Note: The following macro, ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(TypeName),
+// is only for internal use within the implementation of ITK. It may be
+// modified, renamed, or removed without backward compatibility support.
+#ifdef ITK_EXPERIMENTAL_CXX20_REWRITTEN_UNEQUAL_OPERATOR
+// With C++20, operator!= is automatically rewritten in terms of the
+// corresponding operator==.
+#  define ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(TypeName) ITK_MACROEND_NOOP_STATEMENT
+#else
+// For C++14 and C++17, this macro defines an operator!= member function that
+// just calls the corresponding operator== member function.
+#  define ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(TypeName)                                                               \
+    bool operator!=(const TypeName & other) const { return !(this->operator==(other)); }                               \
+    ITK_MACROEND_NOOP_STATEMENT
 #endif
 
 /** Macro used to add standard methods to all classes, mainly type
@@ -1347,4 +1371,22 @@ itkDynamicCastInDebugMode(TSource x)
   return static_cast<TTarget>(x);
 #endif
 }
+
+// Defines which used to be in itk_compiler_detection.h
+#define ITK_ALIGNAS(X) alignas(X)
+#define ITK_ALIGNOF(X) alignof(X)
+#define ITK_DEPRECATED [[deprecated]]
+#define ITK_DEPRECATED_MSG(MSG) [[deprecated(MSG)]]
+#define ITK_CONSTEXPR constexpr
+#define ITK_DELETED_FUNCTION = delete
+#define ITK_EXTERN_TEMPLATE extern
+#define ITK_FINAL final
+#define ITK_NOEXCEPT noexcept
+#define ITK_NOEXCEPT_EXPR(X) noexcept(X)
+#define ITK_NULLPTR nullptr
+#define ITK_OVERRIDE override
+#define ITK_STATIC_ASSERT(X) static_assert(X, #X)
+#define ITK_STATIC_ASSERT_MSG(X, MSG) static_assert(X, MSG)
+#define ITK_THREAD_LOCAL thread_local
+
 #endif // end of itkMacro.h

@@ -165,15 +165,12 @@ public:
     }
 
     bool
-    operator!=(const ConstIterator & o) const
-    {
-      return m_ListIterator != o.m_ListIterator;
-    }
-    bool
     operator==(const ConstIterator & o) const
     {
       return m_ListIterator == o.m_ListIterator;
     }
+
+    ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(ConstIterator);
 
     bool
     IsAtEnd() const
@@ -284,7 +281,9 @@ public:
   using Superclass::IsAtEnd;
   using Superclass::GetOffset;
   using Superclass::operator==;
+#ifndef ITK_EXPERIMENTAL_CXX20_REWRITTEN_UNEQUAL_OPERATOR
   using Superclass::operator!=;
+#endif
   using Superclass::operator<;
   using Superclass::operator>;
   using Superclass::operator>=;

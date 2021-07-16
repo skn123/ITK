@@ -64,7 +64,7 @@ public:
     if (zeroOrigin)
     {
       double origin[TImage::ImageDimension];
-      for (unsigned int i = 0; i < TImage::ImageDimension; i++)
+      for (unsigned int i = 0; i < TImage::ImageDimension; ++i)
       {
         origin[i] = 0;
       }
@@ -110,7 +110,7 @@ public:
   static void
   RandomPix(vnl_random & randgen, itk::RGBPixel<unsigned char> & pix)
   {
-    for (unsigned int i = 0; i < 3; i++)
+    for (unsigned int i = 0; i < 3; ++i)
     {
       pix[i] = randgen.lrand32(itk::NumericTraits<unsigned char>::max());
     }
@@ -152,7 +152,7 @@ public:
   static int
   Remove(const char * fname)
   {
-    return itksys::SystemTools::RemoveFile(fname);
+    return static_cast<bool>(itksys::SystemTools::RemoveFile(fname));
   }
 
   template <typename ImageType>

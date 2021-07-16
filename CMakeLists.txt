@@ -10,7 +10,7 @@
 # CMake versions greater than the ITK_NEWEST_VALIDATED_POLICIES_VERSION policies will
 # continue to generate policy warnings "CMake Warning (dev)...Policy CMP0XXX is not set:"
 #
-set(ITK_OLDEST_VALIDATED_POLICIES_VERSION "3.10.2")
+set(ITK_OLDEST_VALIDATED_POLICIES_VERSION "3.16.3")
 set(ITK_NEWEST_VALIDATED_POLICIES_VERSION "3.19.7")
 cmake_minimum_required(VERSION ${ITK_OLDEST_VALIDATED_POLICIES_VERSION} FATAL_ERROR)
 if("${CMAKE_VERSION}" VERSION_LESS_EQUAL "${ITK_NEWEST_VALIDATED_POLICIES_VERSION}")
@@ -24,26 +24,26 @@ cmake_policy(VERSION ${ITK_CMAKE_POLICY_VERSION})
 # Now enumerate specific policies newer than ITK_NEWEST_VALIDATED_POLICIES_VERSION
 # that may need to be individually set to NEW/OLD
 #
-foreach(pnew "") # Currently Empty
+foreach(pnew "CMP0120")
   if(POLICY ${pnew})
     cmake_policy(SET ${pnew} NEW)
   endif()
 endforeach()
-foreach(pold "CMP0120") # CMP0120 will require non-trivial effort to address
+foreach(pold "CMP0091")
   if(POLICY ${pold})
     cmake_policy(SET ${pold} OLD)
   endif()
 endforeach()
 
-# ==== Define language standard configurations requiring at least c++11 standard
-if(CMAKE_CXX_STANDARD EQUAL "98" )
-   message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=98 is not supported in ITK version 5 and greater.")
+# ==== Define language standard configurations requiring at least c++14 standard
+if(CMAKE_CXX_STANDARD EQUAL "98" OR CMAKE_CXX_STANDARD LESS "14")
+   message(FATAL_ERROR "C++98 to C++11 are no longer supported in ITK version 5.3 and greater.")
 endif()
 
 #####
 ##  Set the default target properties for ITK
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
+  set(CMAKE_CXX_STANDARD 14) # Supported values are 14, 17, 20, and 23.
 endif()
 if(NOT CMAKE_CXX_STANDARD_REQUIRED)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -242,14 +242,8 @@ set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Generate debug library name with a post
 mark_as_advanced(CMAKE_DEBUG_POSTFIX)
 
 # Configure find_package behavior
-if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.16")
-  if(NOT DEFINED CMAKE_FIND_USE_PACKAGE_REGISTRY)
+if(NOT DEFINED CMAKE_FIND_USE_PACKAGE_REGISTRY)
     set(CMAKE_FIND_USE_PACKAGE_REGISTRY 0)
-  endif()
-else()
-  if(NOT DEFINED CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY)
-    set(CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY 1)
-  endif()
 endif()
 
 # Setup build locations for shared libraries ----START

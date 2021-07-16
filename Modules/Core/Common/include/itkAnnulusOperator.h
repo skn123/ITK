@@ -72,19 +72,20 @@ template <typename TPixel, unsigned int TDimension = 2, typename TAllocator = Ne
 class ITK_TEMPLATE_EXPORT AnnulusOperator : public NeighborhoodOperator<TPixel, TDimension, TAllocator>
 {
 public:
-  /** Standard type alias */
+  /** Standard class type aliases. */
   using Self = AnnulusOperator;
   using Superclass = NeighborhoodOperator<TPixel, TDimension, TAllocator>;
 
-  /** Additional type alias */
+  /** Additional type aliases. */
+  using PixelType = TPixel;
   using SizeType = typename Superclass::SizeType;
   using OffsetType = typename Superclass::OffsetType;
   using SpacingType = Vector<double, TDimension>;
 
+  /** Run-time type information (and related methods). */
   itkTypeMacro(AnnulusOperator, NeighborhoodOperator);
 
-  /** This function is called to create the operator.  The radius of
-   * the operator is determine automatically.  */
+  /** Create the operator. The radius of the operator is determined automatically. */
   void
   CreateOperator();
 
@@ -224,7 +225,6 @@ protected:
   /** Typedef support for coefficient vector type.  Necessary to
    *  work around compiler bug on VC++. */
   using CoefficientVector = typename Superclass::CoefficientVector;
-  using PixelType = typename Superclass::PixelType;
 
   /** Calculates operator coefficients. */
   CoefficientVector

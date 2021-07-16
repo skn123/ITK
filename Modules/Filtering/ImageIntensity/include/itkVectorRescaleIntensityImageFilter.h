@@ -42,28 +42,21 @@ public:
     m_Factor = a;
   }
   static constexpr unsigned int VectorDimension = TInput::Dimension;
-  bool
-  operator!=(const VectorMagnitudeLinearTransform & other) const
-  {
-    if (Math::NotExactlyEquals(m_Factor, other.m_Factor))
-    {
-      return true;
-    }
-    return false;
-  }
 
   bool
   operator==(const VectorMagnitudeLinearTransform & other) const
   {
-    return !(*this != other);
+    return Math::ExactlyEquals(m_Factor, other.m_Factor);
   }
+
+  ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(VectorMagnitudeLinearTransform);
 
   inline TOutput
   operator()(const TInput & x) const
   {
     TOutput result;
 
-    for (unsigned int i = 0; i < VectorDimension; i++)
+    for (unsigned int i = 0; i < VectorDimension; ++i)
     {
       const RealType scaledComponent = static_cast<RealType>(x[i]) * m_Factor;
       result[i] = static_cast<typename TOutput::ValueType>(scaledComponent);

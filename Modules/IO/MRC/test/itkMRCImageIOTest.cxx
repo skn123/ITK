@@ -203,7 +203,7 @@ MRCImageIOTester<TImageType>::Read(const std::string & filePrefix, std::string &
     typename ImageType::RegionType region = image->GetLargestPossibleRegion();
     typename ImageType::SizeType   size = region.GetSize();
     bool                           sizeGood = true;
-    for (unsigned int i = 0; i < ImageType::GetImageDimension(); i++)
+    for (unsigned int i = 0; i < ImageType::GetImageDimension(); ++i)
     {
       if (size[i] != 10)
       {
@@ -278,6 +278,7 @@ itkMRCImageIOTest(int argc, char * argv[])
 
   if (argc < 2)
   {
+    std::cerr << "Missing Parameters." << std::endl;
     std::cerr << "Usage: " << itkNameOfTestExecutableMacro(argv) << " outputPath" << std::endl;
     return EXIT_FAILURE;
   }
@@ -461,16 +462,14 @@ itkMRCImageIOTest(int argc, char * argv[])
   }
   std::cout << "[PASSED] threw exception (5D)" << std::endl;
 
-  //
-  // use print methods
-  //
+
+  // Exercise other methods to improve coverage
   using IOType = itk::MRCImageIO;
   IOType::Pointer mrcIO = IOType::New();
 
   ITK_EXERCISE_BASIC_OBJECT_METHODS(mrcIO, MRCImageIO, StreamingImageIOBase);
 
-  //
-  // All tests succeeded
-  //
+
+  std::cout << "Test finished." << std::endl;
   return EXIT_SUCCESS;
 }

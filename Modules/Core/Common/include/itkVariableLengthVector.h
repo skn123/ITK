@@ -21,7 +21,6 @@
 #include <cassert>
 #include <algorithm>
 #include "itkNumericTraits.h"
-#include "itkStaticAssert.h"
 #include "itkMetaProgrammingLibrary.h"
 #include "itkEnableIf.h"
 #include "itkIsBaseOf.h"
@@ -960,8 +959,7 @@ public:
   bool
   operator==(const Self & v) const;
 
-  bool
-  operator!=(const Self & v) const;
+  ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(Self);
 
   /** Returns vector's Euclidean Norm  */
   RealValueType
@@ -1207,8 +1205,8 @@ struct VariableLengthVectorExpression
   {
     // Not neccessary actually as end-user/developer is not expected to
     // provide new BinaryOperations
-    itkStaticAssert((itk::mpl::IsBaseOf<Details::op::BinaryOperationConcept, TBinaryOp>::Value),
-                    "The Binary Operation shall inherit from BinaryOperationConcept");
+    static_assert((itk::mpl::IsBaseOf<Details::op::BinaryOperationConcept, TBinaryOp>::Value),
+                  "The Binary Operation shall inherit from BinaryOperationConcept");
   }
 
   /// Returns the size of the vector expression.
