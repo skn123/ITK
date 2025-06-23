@@ -67,13 +67,17 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ObjectFactoryBase, Object);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ObjectFactoryBase);
 
   /** Create and return an instance of the named itk object.
    * Each loaded ObjectFactoryBase will be asked in the order
    * the factory was in the ITK_AUTOLOAD_PATH.  After the
-   * first factory returns the object no other factories are asked. */
+   * first factory returns the object no other factories are asked.
+   *
+   * \note The object returned by `CreateInstance` will have a reference count of 2, instead of 1. So in order to avoid
+   * memory leaks, one may need to call `object->UnRegister()`.
+   */
   static LightObject::Pointer
   CreateInstance(const char * itkclassname);
 
@@ -157,6 +161,7 @@ public:
    * versions do not match, an exception will be thrown. When this is false, and
    * the versions do not match, only a warning message is printed out in the
    * console, and the factory is still registered. */
+  /** @ITKStartGrouping */
   static void
   SetStrictVersionChecking(bool);
   static void
@@ -165,7 +170,7 @@ public:
   StrictVersionCheckingOff();
   static bool
   GetStrictVersionChecking();
-
+  /** @ITKEndGrouping */
   /** Return a descriptive string describing the factory. */
   virtual const char *
   GetDescription() const = 0;
@@ -214,16 +219,13 @@ public:
     {};
 
     // Factory registration, made thread-safe by "magic statics" (as introduced with C++11).
-    static const FactoryRegistration staticFactoryRegistration = [] {
+    [[maybe_unused]] static const FactoryRegistration staticFactoryRegistration = [] {
       RegisterFactoryInternal(TFactory::New());
       return FactoryRegistration{};
     }();
-
-    (void)staticFactoryRegistration;
   }
 
-  /** Initialize the static members of ObjectFactoryBase.
-   *  RegisterInternal() and InitializeFactoryList() are called here. */
+  /** Initialize the static members of ObjectFactoryBase. */
   static void
   Initialize();
 
@@ -261,19 +263,12 @@ private:
 
   /** Set/Get the pointer to ObjectFactoryBasePrivate.
    * No concurrent thread safe. */
+  /** @ITKStartGrouping */
   static void
   SynchronizeObjectFactoryBase(void * objectFactoryBasePrivate);
   itkGetGlobalDeclarationMacro(ObjectFactoryBasePrivate, PimplGlobals);
-
+  /** @ITKEndGrouping */
   const std::unique_ptr<OverrideMap> m_OverrideMap;
-
-  /** Initialize the static list of Factories. */
-  static void
-  InitializeFactoryList();
-
-  /** Register default factories which are not loaded at run time. */
-  static void
-  RegisterInternal();
 
   /** Load dynamic factories from the ITK_AUTOLOAD_PATH */
   static void

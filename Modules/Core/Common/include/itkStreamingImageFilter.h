@@ -55,8 +55,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(StreamingImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(StreamingImageFilter);
 
   /** Some type alias for the input and output. */
   using InputImageType = TInputImage;
@@ -87,9 +87,10 @@ public:
   itkGetConstReferenceMacro(NumberOfStreamDivisions, unsigned int);
 
   /** Get/Set the helper class for dividing the input into chunks. */
+  /** @ITKStartGrouping */
   itkSetObjectMacro(RegionSplitter, SplitterType);
   itkGetModifiableObjectMacro(RegionSplitter, SplitterType);
-
+  /** @ITKEndGrouping */
   /** Override UpdateOutputData() from ProcessObject to divide upstream
    * updates into pieces. This filter does not have a GenerateData()
    * or ThreadedGenerateData() method.  Instead, all the work is done
@@ -105,12 +106,8 @@ public:
   void
   PropagateRequestedRegion(DataObject * output) override;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
   itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputImagePixelType, OutputImagePixelType>));
-  // End concept checking
-#endif
 
 protected:
   StreamingImageFilter();

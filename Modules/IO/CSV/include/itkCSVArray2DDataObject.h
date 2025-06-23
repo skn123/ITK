@@ -58,8 +58,8 @@ public:
   /** Standard New method. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(CSVArray2DDataObject, DataObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(CSVArray2DDataObject);
 
   /* Vector type alias. */
   using NumericVectorType = typename std::vector<TData>;
@@ -69,15 +69,17 @@ public:
   using MatrixType = typename itk::Array2D<TData>;
 
   /** Set macros */
+  /** @ITKStartGrouping */
   itkSetMacro(HasColumnHeaders, bool);
   itkSetMacro(HasRowHeaders, bool);
   itkBooleanMacro(HasColumnHeaders);
   itkBooleanMacro(HasRowHeaders);
-
+  /** @ITKEndGrouping */
   /** Get macros for Column and Row headers. */
+  /** @ITKStartGrouping */
   itkGetConstMacro(HasColumnHeaders, bool);
   itkGetConstMacro(HasRowHeaders, bool);
-
+  /** @ITKEndGrouping */
   /** Get macro for the matrix. */
   itkGetMacro(Matrix, MatrixType);
 

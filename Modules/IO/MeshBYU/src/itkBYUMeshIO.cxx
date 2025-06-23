@@ -16,6 +16,8 @@
  *
  *=========================================================================*/
 
+#include <cmath>
+
 #include "itkBYUMeshIO.h"
 
 #include "itksys/SystemTools.hxx"
@@ -71,7 +73,7 @@ BYUMeshIO::ReadMeshInformation()
 
   if (!inputFile.is_open())
   {
-    itkExceptionMacro(<< "Unable to open input file " << this->m_FileName);
+    itkExceptionMacro("Unable to open input file " << this->m_FileName);
   }
 
   // Read the ASCII file information
@@ -97,8 +99,8 @@ BYUMeshIO::ReadMeshInformation()
   }
   else
   {
-    unsigned int firstId;
-    unsigned int lastId;
+    unsigned int firstId = 0;
+    unsigned int lastId = 0;
     for (unsigned int ii = 0; ii < m_PartId; ++ii)
     {
       inputFile >> firstId >> lastId;
@@ -136,7 +138,7 @@ BYUMeshIO::ReadMeshInformation()
   this->m_PointComponentType = IOComponentEnum::DOUBLE;
 
   // Read and omit points
-  double x;
+  double x = NAN;
   for (SizeValueType ii = 0; ii < this->m_NumberOfPoints; ++ii)
   {
     for (unsigned int jj = 0; jj < this->m_PointDimension; ++jj)
@@ -146,7 +148,7 @@ BYUMeshIO::ReadMeshInformation()
   }
 
   // Determine cellbuffersize
-  int ptId;
+  int ptId = 0;
   this->m_CellBufferSize = 0;
   SizeValueType numLines = 0;
   while (numLines < this->m_NumberOfCells)
@@ -167,12 +169,12 @@ BYUMeshIO::ReadMeshInformation()
   // Set default point pixel component and point pixel type
   this->m_PointPixelComponentType = IOComponentEnum::FLOAT;
   this->m_PointPixelType = IOPixelEnum::SCALAR;
-  this->m_NumberOfPointPixelComponents = itk::NumericTraits<unsigned int>::OneValue();
+  this->m_NumberOfPointPixelComponents = 1;
 
   // Set default cell pixel component and point pixel type
   this->m_CellPixelComponentType = IOComponentEnum::FLOAT;
   this->m_CellPixelType = IOPixelEnum::SCALAR;
-  this->m_NumberOfCellPixelComponents = itk::NumericTraits<unsigned int>::OneValue();
+  this->m_NumberOfCellPixelComponents = 1;
 
   inputFile.close();
 }
@@ -189,7 +191,7 @@ BYUMeshIO::ReadPoints(void * buffer)
 
   if (!inputFile.is_open())
   {
-    itkExceptionMacro(<< "Unable to open input file " << this->m_FileName);
+    itkExceptionMacro("Unable to open input file " << this->m_FileName);
   }
 
   // Set the position to points start
@@ -225,7 +227,7 @@ BYUMeshIO::ReadCells(void * buffer)
 
   if (!inputFile.is_open())
   {
-    itkExceptionMacro(<< "Unable to open input file " << this->m_FileName);
+    itkExceptionMacro("Unable to open input file " << this->m_FileName);
   }
 
   // Set the position to current position
@@ -237,7 +239,7 @@ BYUMeshIO::ReadCells(void * buffer)
   SizeValueType numPoints = 0;
   SizeValueType id{};
   SizeValueType index = 2;
-  int           ptId;
+  int           ptId = 0;
   m_FirstCellId -= 1;
   m_LastCellId -= 1;
   while (id < this->m_NumberOfCells)
@@ -297,7 +299,7 @@ BYUMeshIO::WriteMeshInformation()
   }
 
   // Write BYU file header
-  Indent indent(7);
+  const Indent indent(7);
   outputFile << indent << 1 << indent << this->m_NumberOfPoints << indent << this->m_NumberOfCells << indent
              << this->m_CellBufferSize - 2 * this->m_NumberOfCells << std::endl
              << indent << 1 << indent << this->m_NumberOfCells << std::endl;
@@ -406,7 +408,7 @@ BYUMeshIO::WritePoints(void * buffer)
     }
     default:
     {
-      itkExceptionMacro(<< "Unknown point pixel component type" << std::endl);
+      itkExceptionMacro("Unknown point pixel component type" << std::endl);
     }
   }
 
@@ -502,7 +504,7 @@ BYUMeshIO::WriteCells(void * buffer)
     }
     default:
     {
-      itkExceptionMacro(<< "Unknown cell pixel component type" << std::endl);
+      itkExceptionMacro("Unknown cell pixel component type" << std::endl);
     }
   }
 

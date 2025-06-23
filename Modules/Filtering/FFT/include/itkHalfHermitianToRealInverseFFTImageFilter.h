@@ -74,8 +74,8 @@ public:
 
   static constexpr unsigned int ImageDimension = InputImageType::ImageDimension;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(HalfHermitianToRealInverseFFTImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(HalfHermitianToRealInverseFFTImageFilter);
 
   /** Customized object creation methods that support configuration-based
    * selection of FFT implementation.
@@ -84,14 +84,15 @@ public:
   itkFactoryOnlyNewMacro(Self);
 
   /** Was the original truncated dimension size odd? */
+  /** @ITKStartGrouping */
   itkSetGetDecoratedInputMacro(ActualXDimensionIsOdd, bool);
   itkBooleanMacro(ActualXDimensionIsOdd);
-
+  /** @ITKEndGrouping */
   /* Return the preferred greatest prime factor supported for the input image
    * size. Defaults to 2 as many implementations work only for sizes that are
    * power of 2.
    */
-  virtual SizeValueType
+  [[nodiscard]] virtual SizeValueType
   GetSizeGreatestPrimeFactor() const;
 
 protected:

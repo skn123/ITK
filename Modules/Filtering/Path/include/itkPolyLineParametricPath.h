@@ -65,8 +65,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(PolyLineParametricPath, ParametricPath);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PolyLineParametricPath);
 
   /** Input type */
   using typename Superclass::InputType;
@@ -88,7 +88,7 @@ public:
   OutputType
   Evaluate(const InputType & input) const override;
 
-  ///** Evaluate the first derivative of the ND output with respect to the 1D
+  /** Evaluate the first derivative of the ND output with respect to the 1D
   //  * input.  This is an exact, algebraic function. */
   // virtual VectorType EvaluateDerivative(const InputType & input) const;
 

@@ -27,12 +27,11 @@ ImageRandomNonRepeatingConstIteratorWithIndex<TImage>::ImageRandomNonRepeatingCo
   const ImageType *  ptr,
   const RegionType & region)
   : ImageConstIteratorWithIndex<TImage>(ptr, region)
-{
-  m_NumberOfPixelsInRegion = region.GetNumberOfPixels();
-  m_NumberOfSamplesRequested = 0L;
-  m_NumberOfSamplesDone = 0L;
-  m_Permutation = new RandomPermutation(m_NumberOfPixelsInRegion);
-}
+  , m_NumberOfSamplesRequested(0L)
+  , m_NumberOfSamplesDone(0L)
+  , m_NumberOfPixelsInRegion(region.GetNumberOfPixels())
+  , m_Permutation(new RandomPermutation(m_NumberOfPixelsInRegion))
+{}
 
 template <typename TImage>
 ImageRandomNonRepeatingConstIteratorWithIndex<TImage> &
@@ -54,24 +53,6 @@ ImageRandomNonRepeatingConstIteratorWithIndex<TImage>::operator=(const Self & it
     }
   }
   return *this;
-}
-
-template <typename TImage>
-void
-ImageRandomNonRepeatingConstIteratorWithIndex<TImage>::SetNumberOfSamples(SizeValueType number)
-{
-  m_NumberOfSamplesRequested = number;
-  if (number > m_NumberOfPixelsInRegion)
-  {
-    m_NumberOfSamplesRequested = m_NumberOfPixelsInRegion;
-  }
-}
-
-template <typename TImage>
-auto
-ImageRandomNonRepeatingConstIteratorWithIndex<TImage>::GetNumberOfSamples() const -> SizeValueType
-{
-  return m_NumberOfSamplesRequested;
 }
 
 template <typename TImage>

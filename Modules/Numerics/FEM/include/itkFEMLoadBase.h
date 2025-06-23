@@ -23,9 +23,7 @@
 #include "itkFEMPArray.h"
 #include "ITKFEMExport.h"
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Load
@@ -46,8 +44,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Load, FEMLightObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Load);
 
   /** Array class that holds special pointers to the load objects */
   using ArrayType = FEMPArray<Self>;
@@ -101,7 +99,6 @@ protected:
    */
   Element::ConstPointer m_Element{};
 };
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMLoadBase_h

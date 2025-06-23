@@ -41,10 +41,9 @@ namespace itk
  * Constructor to initialize a time stamp
  */
 RealTimeInterval::RealTimeInterval()
-{
-  this->m_Seconds = itk::NumericTraits<SecondsDifferenceType>::ZeroValue();
-  this->m_MicroSeconds = itk::NumericTraits<MicroSecondsDifferenceType>::ZeroValue();
-}
+  : m_Seconds(SecondsDifferenceType{})
+  , m_MicroSeconds(MicroSecondsDifferenceType{})
+{}
 
 /**
  * Constructor to initialize a time stamp

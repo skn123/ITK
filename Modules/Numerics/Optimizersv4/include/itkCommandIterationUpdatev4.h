@@ -98,7 +98,7 @@ public:
   /**
    * Run-time type information (and related methods).
    */
-  itkTypeMacro(CommandIterationUpdatev4, itk::Command);
+  itkOverrideGetNameOfClassMacro(CommandIterationUpdatev4);
 
 
   /**
@@ -126,16 +126,17 @@ public:
   /**
    * Print parameters at each iteration
    */
+  /** @ITKStartGrouping */
   itkSetMacro(PrintParameters, bool);
   itkGetMacro(PrintParameters, bool);
   itkBooleanMacro(PrintParameters);
-
+  /** @ITKEndGrouping */
 
 protected:
   /**
    * Constructor
    */
-  CommandIterationUpdatev4(){};
+  CommandIterationUpdatev4() {}
 
 private:
   /**

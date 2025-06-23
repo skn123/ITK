@@ -1,6 +1,7 @@
 itk_wrap_module(ITKLabelMap)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkLabelObjectLine
   itkLabelObject
   itkShapeLabelObject

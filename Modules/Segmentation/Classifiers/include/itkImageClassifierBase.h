@@ -82,8 +82,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageClassifierBase, ClassifierBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ImageClassifierBase);
 
   /** Type definition for the input image. */
   using InputImageType = TInputImage;
@@ -109,9 +109,10 @@ public:
   using typename Superclass::DecisionRuleType;
 
   /** Get/Set the input image. */
+  /** @ITKStartGrouping */
   itkSetConstObjectMacro(InputImage, InputImageType);
   itkGetConstObjectMacro(InputImage, InputImageType);
-
+  /** @ITKEndGrouping */
   /** Set the classified image. */
   itkSetMacro(ClassifiedImage, ClassifiedImagePointer);
 

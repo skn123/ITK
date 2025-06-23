@@ -23,24 +23,18 @@ namespace itk
 {
 
 SPSAOptimizer::SPSAOptimizer()
-
+  : m_StopCondition(StopConditionSPSAOptimizerEnum::Unknown)
+  , m_MinimumNumberOfIterations(10)
+  , m_MaximumNumberOfIterations(100)
+  , m_StateOfConvergenceDecayRate(0.9)
+  , m_Tolerance(1e-06)
+  , m_NumberOfPerturbations(1)
+  , m_Sa(1.0)
+  , m_Sc(1.0)
+  , m_A(m_MaximumNumberOfIterations / 10)
+  , m_Alpha(0.602)
+  , m_Gamma(0.101)
 {
-  m_CurrentIteration = 0;
-  m_Maximize = false;
-  m_StopCondition = StopConditionSPSAOptimizerEnum::Unknown;
-  m_StateOfConvergenceDecayRate = 0.9;
-  m_Tolerance = 1e-06;
-  m_StateOfConvergence = 0;
-  m_MaximumNumberOfIterations = 100;
-  m_MinimumNumberOfIterations = 10;
-  m_GradientMagnitude = 0.0;
-  m_NumberOfPerturbations = 1;
-  m_LearningRate = 0.0;
-  m_Sa = 1.0;
-  m_Sc = 1.0;
-  m_A = m_MaximumNumberOfIterations / 10;
-  m_Alpha = 0.602;
-  m_Gamma = 0.101;
   m_Generator = Statistics::MersenneTwisterRandomVariateGenerator::GetInstance();
 }
 
@@ -53,7 +47,7 @@ SPSAOptimizer::PrintSelf(std::ostream & os, Indent indent) const
      << std::endl;
   os << indent << "LearningRate: " << m_LearningRate << std::endl;
   os << indent << "Delta: " << static_cast<typename NumericTraits<DerivativeType>::PrintType>(m_Delta) << std::endl;
-  os << indent << "Stop: " << (m_Stop ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(Stop);
   os << indent << "StopCondition: " << m_StopCondition << std::endl;
   os << indent << "StateOfConvergence: " << m_StateOfConvergence << std::endl;
   os << indent
@@ -68,7 +62,7 @@ SPSAOptimizer::PrintSelf(std::ostream & os, Indent indent) const
      << static_cast<typename NumericTraits<SizeValueType>::PrintType>(m_MaximumNumberOfIterations) << std::endl;
   os << indent << "StateOfConvergenceDecayRate: " << m_StateOfConvergenceDecayRate << std::endl;
   os << indent << "Tolerance: " << m_Tolerance << std::endl;
-  os << indent << "Maximize: " << (m_Maximize ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(Maximize);
   os << indent << "GradientMagnitude: " << m_GradientMagnitude << std::endl;
   os << indent << "NumberOfPerturbations: "
      << static_cast<typename NumericTraits<SizeValueType>::PrintType>(m_NumberOfPerturbations) << std::endl;
@@ -105,14 +99,14 @@ SPSAOptimizer::StartOptimization()
 
   if (!m_CostFunction)
   {
-    itkExceptionMacro(<< "No objective function defined! ");
+    itkExceptionMacro("No objective function defined! ");
   }
 
   // The number of parameters
   const unsigned int spaceDimension = m_CostFunction->GetNumberOfParameters();
   if (spaceDimension != this->GetInitialPosition().GetSize())
   {
-    itkExceptionMacro(<< "Number of parameters not correct!");
+    itkExceptionMacro("Number of parameters not correct!");
   }
 
   m_CurrentIteration = 0;
@@ -158,7 +152,7 @@ SPSAOptimizer::ResumeOptimization()
       break;
     }
     m_StateOfConvergence *= m_StateOfConvergenceDecayRate;
-  } // while !m_stop
+  }
 }
 
 void
@@ -175,15 +169,7 @@ SPSAOptimizer::AdvanceOneStep()
   itkDebugMacro("AdvanceOneStep");
 
   // Maximize of Minimize the function?
-  double direction;
-  if (this->m_Maximize)
-  {
-    direction = 1.0;
-  }
-  else
-  {
-    direction = -1.0;
-  }
+  const double direction = (this->m_Maximize) ? 1.0 : -1.0;
 
   // The number of parameters
   const unsigned int spaceDimension = m_CostFunction->GetNumberOfParameters();
@@ -245,8 +231,9 @@ SPSAOptimizer::GenerateDelta(const unsigned int spaceDimension)
   // Make sure the scales have been set properly
   if (scales.size() != spaceDimension)
   {
-    itkExceptionMacro(<< "The size of Scales is " << scales.size()
-                      << ", but the NumberOfParameters for the CostFunction is " << spaceDimension << '.');
+    itkExceptionMacro("The size of Scales is "
+                      << scales.size() << ", but the NumberOfParameters for the CostFunction is " << spaceDimension
+                      << '.');
   }
 
   const ScalesType & invScales = this->GetInverseScales();
@@ -361,7 +348,7 @@ SPSAOptimizer::GuessParameters(SizeValueType numberOfGradientEstimates, double i
 
   if (!m_CostFunction)
   {
-    itkExceptionMacro(<< "No objective function defined! ");
+    itkExceptionMacro("No objective function defined! ");
   }
 
   // The number of parameters
@@ -371,7 +358,7 @@ SPSAOptimizer::GuessParameters(SizeValueType numberOfGradientEstimates, double i
   const ParametersType & initialPosition = this->GetInitialPosition();
   if (spaceDimension != initialPosition.GetSize())
   {
-    itkExceptionMacro(<< "Number of parameters not correct!");
+    itkExceptionMacro("Number of parameters not correct!");
   }
 
   // Estimate the maximum absolute element of the initial gradient
@@ -392,7 +379,7 @@ SPSAOptimizer::GuessParameters(SizeValueType numberOfGradientEstimates, double i
   this->SetSa(initialStepSize * std::pow(m_A + 1.0, m_Alpha) / averageAbsoluteGradient.max_value());
 }
 
-const std::string
+std::string
 SPSAOptimizer::GetStopConditionDescription() const
 {
   std::ostringstream reason;

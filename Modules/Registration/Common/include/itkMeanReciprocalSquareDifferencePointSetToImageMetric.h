@@ -58,8 +58,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(MeanReciprocalSquareDifferencePointSetToImageMetric, Object);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(MeanReciprocalSquareDifferencePointSetToImageMetric);
 
   /** Types transferred from the base class */
   using typename Superclass::RealType;
@@ -97,9 +97,10 @@ public:
 
   /**  Set/Get the lambda distance. (controls the capture radius of the metric).
    */
+  /** @ITKStartGrouping */
   itkSetMacro(Lambda, double);
   itkGetConstMacro(Lambda, double);
-
+  /** @ITKEndGrouping */
 protected:
   MeanReciprocalSquareDifferencePointSetToImageMetric();
   ~MeanReciprocalSquareDifferencePointSetToImageMetric() override = default;

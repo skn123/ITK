@@ -32,7 +32,7 @@ namespace itk
  * \author Gaetan Lehmann. Biologie du Developpement et de la Reproduction, INRA de Jouy-en-Josas, France.
  *
  * This implementation was taken from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/176
+ * https://doi.org/10.54294/q6auw4
  *
  * \ingroup DataRepresentation
  * \ingroup ITKLabelMap
@@ -54,8 +54,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(StatisticsLabelObject, LabelObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(StatisticsLabelObject);
 
   using LabelMapType = LabelMap<Self>;
 
@@ -104,7 +104,7 @@ public:
     {
       return MINIMUM;
     }
-    else if (s == "Maximum")
+    if (s == "Maximum")
     {
       return MAXIMUM;
     }
@@ -185,58 +185,40 @@ public:
     {
       case MINIMUM:
         return "Minimum";
-        break;
       case MAXIMUM:
         return "Maximum";
-        break;
       case MEAN:
         return "Mean";
-        break;
       case SUM:
         return "Sum";
-        break;
       case STANDARD_DEVIATION:
         return "StandardDeviation";
-        break;
       case VARIANCE:
         return "Variance";
-        break;
       case MEDIAN:
         return "Median";
-        break;
       case MAXIMUM_INDEX:
         return "MaximumIndex";
-        break;
       case MINIMUM_INDEX:
         return "MinimumIndex";
-        break;
       case CENTER_OF_GRAVITY:
         return "CenterOfGravity";
-        break;
       /*      case CENTRAL_MOMENTS:
-              return "CentralMoments";
-              break;*/
+              return "CentralMoments";*/
       case WEIGHTED_PRINCIPAL_MOMENTS:
         return "WeightedPrincipalMoments";
-        break;
       case WEIGHTED_PRINCIPAL_AXES:
         return "WeightedPrincipalAxes";
-        break;
       case KURTOSIS:
         return "Kurtosis";
-        break;
       case SKEWNESS:
         return "Skewness";
-        break;
       case WEIGHTED_ELONGATION:
         return "WeightedElongation";
-        break;
       case HISTOGRAM:
         return "Histogram";
-        break;
       case WEIGHTED_FLATNESS:
         return "WeightedFlatness";
-        break;
     }
     // can't recognize the name
     return Superclass::GetNameFromAttribute(a);
@@ -281,7 +263,7 @@ public:
     this->template CopyAttributesFrom<TSourceLabelObject>(src);
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetMinimum() const
   {
     return m_Minimum;
@@ -293,7 +275,7 @@ public:
     m_Minimum = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetMaximum() const
   {
     return m_Maximum;
@@ -305,7 +287,7 @@ public:
     m_Maximum = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetMean() const
   {
     return m_Mean;
@@ -317,7 +299,7 @@ public:
     m_Mean = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetSum() const
   {
     return m_Sum;
@@ -329,7 +311,7 @@ public:
     m_Sum = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetStandardDeviation() const
   {
     return m_StandardDeviation;
@@ -341,7 +323,7 @@ public:
     m_StandardDeviation = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetVariance() const
   {
     return m_Variance;
@@ -353,7 +335,7 @@ public:
     m_Variance = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetMedian() const
   {
     return m_Median;
@@ -436,7 +418,7 @@ public:
     m_WeightedPrincipalAxes = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetSkewness() const
   {
     return m_Skewness;
@@ -448,7 +430,7 @@ public:
     m_Skewness = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetKurtosis() const
   {
     return m_Kurtosis;
@@ -460,7 +442,7 @@ public:
     m_Kurtosis = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetWeightedElongation() const
   {
     return m_WeightedElongation;
@@ -472,7 +454,7 @@ public:
     m_WeightedElongation = v;
   }
 
-  const HistogramType *
+  [[nodiscard]] const HistogramType *
   GetHistogram() const
   {
     return m_Histogram;
@@ -484,7 +466,7 @@ public:
     m_Histogram = v;
   }
 
-  const double &
+  [[nodiscard]] const double &
   GetWeightedFlatness() const
   {
     return m_WeightedFlatness;
@@ -544,7 +526,7 @@ public:
       }
     }
 
-    AffineTransformPointer result = AffineTransformType::New();
+    const AffineTransformPointer result = AffineTransformType::New();
     result->SetMatrix(matrix);
     result->SetOffset(offset);
 
@@ -556,25 +538,15 @@ public:
 
 protected:
   StatisticsLabelObject()
+    : m_Histogram(nullptr)
+
   {
-    m_Minimum = 0;
-    m_Maximum = 0;
-    m_Mean = 0;
-    m_Sum = 0;
-    m_StandardDeviation = 0;
-    m_Variance = 0;
-    m_Median = 0;
     m_MaximumIndex.Fill(0);
     m_MinimumIndex.Fill(0);
     m_CenterOfGravity.Fill(0);
     // m_CentralMoments.Fill(0);
     m_WeightedPrincipalMoments.Fill(0);
     m_WeightedPrincipalAxes.Fill(0);
-    m_Kurtosis = 0;
-    m_Skewness = 0;
-    m_WeightedElongation = 0;
-    m_Histogram = nullptr;
-    m_WeightedFlatness = 0;
   }
 
   void

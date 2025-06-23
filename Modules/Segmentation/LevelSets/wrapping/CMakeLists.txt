@@ -1,6 +1,7 @@
 itk_wrap_module(ITKLevelSets)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkLevelSetFunction
   itkSparseFieldLevelSetImageFilter
   itkSparseFieldFourthOrderLevelSetImageFilter

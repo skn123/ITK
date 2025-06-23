@@ -32,9 +32,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 /**
  * \class ScalarImageToCooccurrenceListSampleFilter
@@ -89,8 +87,8 @@ public:
   const SampleType *
   GetOutput() const;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ScalarImageToCooccurrenceListSampleFilter, ProcessObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ScalarImageToCooccurrenceListSampleFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -120,8 +118,7 @@ protected:
 private:
   OffsetTable m_OffsetTable{};
 }; // end of class ScalarImageToListSampleFilter
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #  include "itkScalarImageToCooccurrenceListSampleFilter.hxx"

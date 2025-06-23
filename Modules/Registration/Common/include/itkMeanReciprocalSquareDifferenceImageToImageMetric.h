@@ -58,8 +58,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(MeanReciprocalSquareDifferenceImageToImageMetric, ImageToImageMetric);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(MeanReciprocalSquareDifferenceImageToImageMetric);
 
   /** Types transferred from the base class */
   using typename Superclass::TransformType;
@@ -92,14 +92,16 @@ public:
 
   /** Set/Get Lambda value. This factor regulates the capture radius of
       this metric */
+  /** @ITKStartGrouping */
   itkGetConstMacro(Lambda, double);
   itkSetMacro(Lambda, double);
-
+  /** @ITKEndGrouping */
   /** Set/Get Delta value. This value is used as the differential in the
    * computation of the metric derivative using the finite differences method. */
+  /** @ITKStartGrouping */
   itkGetConstMacro(Delta, double);
   itkSetMacro(Delta, double);
-
+  /** @ITKEndGrouping */
 protected:
   MeanReciprocalSquareDifferenceImageToImageMetric();
   ~MeanReciprocalSquareDifferenceImageToImageMetric() override = default;

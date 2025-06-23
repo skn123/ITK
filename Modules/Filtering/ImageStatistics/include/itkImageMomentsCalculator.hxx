@@ -29,17 +29,16 @@ namespace itk
 // Construct without computing moments
 template <typename TImage>
 ImageMomentsCalculator<TImage>::ImageMomentsCalculator()
+  : m_M0(ScalarType{})
+  , m_Image(nullptr)
+  , m_SpatialObjectMask(nullptr)
 {
-  m_Valid = false;
-  m_Image = nullptr;
-  m_SpatialObjectMask = nullptr;
-  m_M0 = NumericTraits<ScalarType>::ZeroValue();
-  m_M1.Fill(NumericTraits<typename VectorType::ValueType>::ZeroValue());
-  m_M2.Fill(NumericTraits<typename MatrixType::ValueType>::ZeroValue());
-  m_Cg.Fill(NumericTraits<typename VectorType::ValueType>::ZeroValue());
-  m_Cm.Fill(NumericTraits<typename MatrixType::ValueType>::ZeroValue());
-  m_Pm.Fill(NumericTraits<typename VectorType::ValueType>::ZeroValue());
-  m_Pa.Fill(NumericTraits<typename MatrixType::ValueType>::ZeroValue());
+  m_M1.Fill(typename VectorType::ValueType{});
+  m_M2.Fill(typename MatrixType::ValueType{});
+  m_Cg.Fill(typename VectorType::ValueType{});
+  m_Cm.Fill(typename MatrixType::ValueType{});
+  m_Pm.Fill(typename VectorType::ValueType{});
+  m_Pa.Fill(typename MatrixType::ValueType{});
 }
 
 //----------------------------------------------------------------------
@@ -65,11 +64,11 @@ template <typename TImage>
 void
 ImageMomentsCalculator<TImage>::Compute()
 {
-  m_M0 = NumericTraits<ScalarType>::ZeroValue();
-  m_M1.Fill(NumericTraits<typename VectorType::ValueType>::ZeroValue());
-  m_M2.Fill(NumericTraits<typename MatrixType::ValueType>::ZeroValue());
-  m_Cg.Fill(NumericTraits<typename VectorType::ValueType>::ZeroValue());
-  m_Cm.Fill(NumericTraits<typename MatrixType::ValueType>::ZeroValue());
+  m_M0 = ScalarType{};
+  m_M1.Fill(typename VectorType::ValueType{});
+  m_M2.Fill(typename MatrixType::ValueType{});
+  m_Cg.Fill(typename VectorType::ValueType{});
+  m_Cm.Fill(typename MatrixType::ValueType{});
 
   using IndexType = typename ImageType::IndexType;
 
@@ -82,7 +81,7 @@ ImageMomentsCalculator<TImage>::Compute()
 
   while (!it.IsAtEnd())
   {
-    double value = it.Value();
+    const double value = it.Value();
 
     IndexType indexPosition = it.GetIndex();
 
@@ -98,7 +97,7 @@ ImageMomentsCalculator<TImage>::Compute()
         m_M1[i] += static_cast<double>(indexPosition[i]) * value;
         for (unsigned int j = 0; j < ImageDimension; ++j)
         {
-          double weight = value * static_cast<double>(indexPosition[i]) * static_cast<double>(indexPosition[j]);
+          const double weight = value * static_cast<double>(indexPosition[i]) * static_cast<double>(indexPosition[j]);
           m_M2[i][j] += weight;
         }
       }
@@ -108,7 +107,7 @@ ImageMomentsCalculator<TImage>::Compute()
         m_Cg[i] += physicalPosition[i] * value;
         for (unsigned int j = 0; j < ImageDimension; ++j)
         {
-          double weight = value * physicalPosition[i] * physicalPosition[j];
+          const double weight = value * physicalPosition[i] * physicalPosition[j];
           m_Cm[i][j] += weight;
         }
       }
@@ -147,8 +146,8 @@ ImageMomentsCalculator<TImage>::Compute()
   }
 
   // Compute principal moments and axes
-  vnl_symmetric_eigensystem<double> eigen{ m_Cm.GetVnlMatrix().as_matrix() };
-  vnl_diag_matrix<double>           pm{ eigen.D };
+  const vnl_symmetric_eigensystem<double> eigen{ m_Cm.GetVnlMatrix().as_matrix() };
+  vnl_diag_matrix<double>                 pm{ eigen.D };
   for (unsigned int i = 0; i < ImageDimension; ++i)
   {
     m_Pm[i] = pm(i) * m_M0;
@@ -157,7 +156,7 @@ ImageMomentsCalculator<TImage>::Compute()
 
   // Add a final reflection if needed for a proper rotation,
   // by multiplying the last row by the determinant
-  vnl_real_eigensystem                  eigenrot{ m_Pa.GetVnlMatrix().as_matrix() };
+  const vnl_real_eigensystem            eigenrot{ m_Pa.GetVnlMatrix().as_matrix() };
   vnl_diag_matrix<std::complex<double>> eigenval{ eigenrot.D };
   std::complex<double>                  det(1.0, 0.0);
 
@@ -183,7 +182,7 @@ ImageMomentsCalculator<TImage>::GetTotalMass() const -> ScalarType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_M0;
 }
@@ -196,7 +195,7 @@ ImageMomentsCalculator<TImage>::GetFirstMoments() const -> VectorType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_M1;
 }
@@ -209,7 +208,7 @@ ImageMomentsCalculator<TImage>::GetSecondMoments() const -> MatrixType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_M2;
 }
@@ -222,7 +221,7 @@ ImageMomentsCalculator<TImage>::GetCenterOfGravity() const -> VectorType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_Cg;
 }
@@ -235,7 +234,7 @@ ImageMomentsCalculator<TImage>::GetCentralMoments() const -> MatrixType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_Cm;
 }
@@ -262,7 +261,7 @@ ImageMomentsCalculator<TImage>::GetPrincipalAxes() const -> MatrixType
 {
   if (!m_Valid)
   {
-    itkExceptionMacro(<< "GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro("GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
   }
   return m_Pa;
 }
@@ -310,7 +309,7 @@ ImageMomentsCalculator<TImage>::GetPhysicalAxesToPrincipalAxesTransform() const 
     }
   }
 
-  AffineTransformPointer result = AffineTransformType::New();
+  const AffineTransformPointer result = AffineTransformType::New();
   result->SetMatrix(matrix);
   result->SetOffset(offset);
 

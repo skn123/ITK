@@ -54,8 +54,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(FEMObjectSpatialObject, SpatialObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FEMObjectSpatialObject);
 
   /** Set the FEM object in the spatial object. */
   void
@@ -74,7 +74,7 @@ public:
   }
 
   /** Returns the latest modified time of the object and its component. */
-  ModifiedTimeType
+  [[nodiscard]] ModifiedTimeType
   GetMTime() const override;
 
 protected:

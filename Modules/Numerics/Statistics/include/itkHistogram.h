@@ -25,9 +25,7 @@
 #include "itkDenseFrequencyContainer2.h"
 #include "itkSparseFrequencyContainer2.h"
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 
 /**
@@ -88,8 +86,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Histogram, Sample);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Histogram);
 
   /** standard New() method support */
   itkNewMacro(Self);
@@ -156,14 +154,12 @@ public:
   const IndexType &
   GetIndex(InstanceIdentifier id) const;
 
-  /** Is set to false if the bins at edges of the histogram extend to
-   *   +/- infinity. */
+  /** Set/Get whether the bins at the edges of the histogram extend to +/- infinity. */
+  /** @ITKStartGrouping */
   itkGetConstMacro(ClipBinsAtEnds, bool);
-
-  /** Set to false to have the bins at edges of the histogram extend to
-   *   +/- infinity. */
   itkSetMacro(ClipBinsAtEnds, bool);
-
+  itkBooleanMacro(ClipBinsAtEnds);
+  /** @ITKEndGrouping */
   /** Returns true if the given index is out of bound meaning one of index
    * is not between [0, last index] */
   bool
@@ -350,45 +346,39 @@ public:
   public:
     friend class Histogram;
 
+    ConstIterator() = delete;
     ConstIterator(const Self * histogram)
-    {
-      m_Id = 0;
-      m_Histogram = histogram;
-    }
+      : m_Id(0)
+      , m_Histogram(histogram)
+    {}
 
     ConstIterator(const ConstIterator & it)
-    {
-      m_Id = it.m_Id;
-      m_Histogram = it.m_Histogram;
-    }
+      : m_Id(it.m_Id)
+      , m_Histogram(it.m_Histogram)
+    {}
 
     ConstIterator &
-    operator=(const ConstIterator & it)
-    {
-      m_Id = it.m_Id;
-      m_Histogram = it.m_Histogram;
-      return *this;
-    }
+    operator=(const ConstIterator & it) = default;
 
-    AbsoluteFrequencyType
+    [[nodiscard]] AbsoluteFrequencyType
     GetFrequency() const
     {
       return m_Histogram->GetFrequency(m_Id);
     }
 
-    InstanceIdentifier
+    [[nodiscard]] InstanceIdentifier
     GetInstanceIdentifier() const
     {
       return m_Id;
     }
 
-    const MeasurementVectorType &
+    [[nodiscard]] const MeasurementVectorType &
     GetMeasurementVector() const
     {
       return m_Histogram->GetMeasurementVector(m_Id);
     }
 
-    const IndexType &
+    [[nodiscard]] const IndexType &
     GetIndex() const
     {
       return m_Histogram->GetIndex(m_Id);
@@ -420,9 +410,6 @@ public:
 
     // Pointer of DenseFrequencyContainer
     const Self * m_Histogram;
-
-  private:
-    ConstIterator() = delete;
   }; // end of iterator class
 
   /**
@@ -471,7 +458,7 @@ public:
   Iterator
   Begin()
   {
-    Iterator iter(0, this);
+    const Iterator iter(0, this);
 
     return iter;
   }
@@ -485,7 +472,7 @@ public:
   ConstIterator
   Begin() const
   {
-    ConstIterator iter(0, this);
+    const ConstIterator iter(0, this);
 
     return iter;
   }
@@ -526,8 +513,7 @@ private:
 
   bool m_ClipBinsAtEnds{ true };
 };
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #  include "itkHistogram.hxx"

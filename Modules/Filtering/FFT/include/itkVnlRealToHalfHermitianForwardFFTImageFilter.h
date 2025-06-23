@@ -66,8 +66,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(VnlRealToHalfHermitianForwardFFTImageFilter, RealToHalfHermitianForwardFFTImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(VnlRealToHalfHermitianForwardFFTImageFilter);
 
   /** Extract the dimensionality of the images. They are assumed to be
    * the same. */
@@ -75,14 +75,10 @@ public:
   static constexpr unsigned int InputImageDimension = TInputImage::ImageDimension;
   static constexpr unsigned int OutputImageDimension = TOutputImage::ImageDimension;
 
-  SizeValueType
+  [[nodiscard]] SizeValueType
   GetSizeGreatestPrimeFactor() const override;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(ImageDimensionsMatchCheck, (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
-  // End concept checking
-#endif
 
 protected:
   VnlRealToHalfHermitianForwardFFTImageFilter() = default;

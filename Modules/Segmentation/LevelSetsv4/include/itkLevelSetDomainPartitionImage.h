@@ -45,7 +45,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  itkTypeMacro(LevelSetDomainPartitionImage, LevelSetDomainPartitionBase);
+  itkOverrideGetNameOfClassMacro(LevelSetDomainPartitionImage);
 
   using ImageType = TImage;
   using ImagePointer = typename ImageType::Pointer;
@@ -77,9 +77,10 @@ public:
 
   /** Set the input image that will be used to compute an image with the list
    * of level sets domain overlaps. */
+  /** @ITKStartGrouping */
   itkSetConstObjectMacro(Image, ImageType);
   itkGetConstObjectMacro(Image, ImageType);
-
+  /** @ITKEndGrouping */
   /** Get the image with the list of level set domains. */
   itkGetModifiableObjectMacro(ListDomain, ListImageType);
 

@@ -27,9 +27,8 @@ namespace itk
 // ----------------------------------------------------------------------------
 template <typename TInputImage, typename TLevelSetContainer>
 LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::LevelSetEquationTermContainer()
-{
-  this->m_CurrentLevelSetId = LevelSetIdentifierType();
-}
+  : m_CurrentLevelSetId(LevelSetIdentifierType())
+{}
 
 // ----------------------------------------------------------------------------
 template <typename TInputImage, typename TLevelSetContainer>
@@ -78,7 +77,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::AddTerm(const Te
       }
       else
       {
-        itkGenericExceptionMacro(<< "m_Input and iTerm->GetInput are nullptr");
+        itkGenericExceptionMacro("m_Input and iTerm->GetInput are nullptr");
       }
     }
     iTerm->SetCurrentLevelSetId(this->m_CurrentLevelSetId);
@@ -91,18 +90,18 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::AddTerm(const Te
     {
       if (!iTerm->GetLevelSetContainer())
       {
-        itkGenericExceptionMacro(<< "m_LevelSetContainer and iTerm->GetLevelSetContainer() are nullptr");
+        itkGenericExceptionMacro("m_LevelSetContainer and iTerm->GetLevelSetContainer() are nullptr");
       }
     }
 
     m_Container[iId] = iTerm;
-    m_TermContribution[iId] = NumericTraits<LevelSetOutputPixelType>::ZeroValue();
+    m_TermContribution[iId] = LevelSetOutputPixelType{};
     m_NameContainer[iTerm->GetTermName()] = iTerm;
 
     RequiredDataType termRequiredData = iTerm->GetRequiredData();
 
-    typename RequiredDataType::const_iterator dIt = termRequiredData.begin();
-    typename RequiredDataType::const_iterator dEnd = termRequiredData.end();
+    auto       dIt = termRequiredData.begin();
+    const auto dEnd = termRequiredData.end();
 
     while (dIt != dEnd)
     {
@@ -114,7 +113,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::AddTerm(const Te
   }
   else
   {
-    itkGenericExceptionMacro(<< "Term supplied is null");
+    itkGenericExceptionMacro("Term supplied is null");
   }
 }
 
@@ -133,7 +132,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::PushTerm(TermTyp
       }
       else
       {
-        itkGenericExceptionMacro(<< "m_Input and iTerm->GetInput are nullptr");
+        itkGenericExceptionMacro("m_Input and iTerm->GetInput are nullptr");
       }
     }
 
@@ -147,7 +146,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::PushTerm(TermTyp
     {
       if (!iTerm->GetLevelSetContainer())
       {
-        itkGenericExceptionMacro(<< "m_LevelSetContainer and iTerm->GetLevelSetContainer() are nullptr");
+        itkGenericExceptionMacro("m_LevelSetContainer and iTerm->GetLevelSetContainer() are nullptr");
       }
     }
 
@@ -155,7 +154,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::PushTerm(TermTyp
     ++id;
 
     m_Container[id] = iTerm;
-    m_TermContribution[id] = NumericTraits<LevelSetOutputPixelType>::ZeroValue();
+    m_TermContribution[id] = LevelSetOutputPixelType{};
     m_NameContainer[iTerm->GetTermName()] = iTerm;
 
     RequiredDataType termRequiredData = iTerm->GetRequiredData();
@@ -173,7 +172,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::PushTerm(TermTyp
   }
   else
   {
-    itkGenericExceptionMacro(<< "Term supplied is null");
+    itkGenericExceptionMacro("Term supplied is null");
   }
 }
 
@@ -186,7 +185,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::GetTerm(const st
 
   if (it == m_Container.end())
   {
-    itkGenericExceptionMacro(<< "the term " << iName.c_str() << " is not present in the container");
+    itkGenericExceptionMacro("the term " << iName << " is not present in the container");
   }
 
   return it->second;
@@ -201,7 +200,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::GetTerm(const Te
 
   if (it == m_Container.end())
   {
-    itkGenericExceptionMacro(<< "the term " << iId << " is not present in the container");
+    itkGenericExceptionMacro("the term " << iId << " is not present in the container");
   }
 
   return it->second;
@@ -269,9 +268,9 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::Evaluate(const L
 
   while (term_it != term_end)
   {
-    LevelSetOutputRealType temp_val = (term_it->second)->Evaluate(iP);
+    const LevelSetOutputRealType temp_val = (term_it->second)->Evaluate(iP);
 
-    LevelSetOutputRealType abs_temp_value = itk::Math::abs(temp_val);
+    const LevelSetOutputRealType abs_temp_value = itk::Math::abs(temp_val);
 
     // This is a thread-safe equivalent of:
     // cfl_it->second = std::max(abs_temp_value, cfl_it->second);
@@ -290,9 +289,10 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::Evaluate(const L
 
 // ----------------------------------------------------------------------------
 template <typename TInputImage, typename TLevelSetContainer>
-typename LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::LevelSetOutputRealType
+auto
 LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::Evaluate(const LevelSetInputIndexType & iP,
                                                                          const LevelSetDataType &       iData)
+  -> LevelSetOutputRealType
 {
   auto term_it = m_Container.begin();
   auto term_end = m_Container.end();
@@ -303,9 +303,9 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::Evaluate(const L
 
   while (term_it != term_end)
   {
-    LevelSetOutputRealType temp_val = (term_it->second)->Evaluate(iP, iData);
+    const LevelSetOutputRealType temp_val = (term_it->second)->Evaluate(iP, iData);
 
-    LevelSetOutputRealType abs_temp_value = itk::Math::abs(temp_val);
+    const LevelSetOutputRealType abs_temp_value = itk::Math::abs(temp_val);
 
     // This is a thread-safe equivalent of:
     // cfl_it->second = std::max(abs_temp_value, cfl_it->second);
@@ -335,7 +335,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::Update()
   while (term_it != term_end)
   {
     (term_it->second)->Update();
-    (cfl_it->second) = NumericTraits<LevelSetOutputPixelType>::ZeroValue();
+    (cfl_it->second) = LevelSetOutputPixelType{};
     ++term_it;
     ++cfl_it;
   }
@@ -357,7 +357,7 @@ LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::ComputeCFLContri
   {
     LevelSetOutputRealType cfl = (term_it->second)->GetCFLContribution();
 
-    if (Math::AlmostEquals(cfl, NumericTraits<LevelSetOutputRealType>::ZeroValue()))
+    if (Math::AlmostEquals(cfl, LevelSetOutputRealType{}))
     {
       cfl = (cfl_it->second);
     }
@@ -376,12 +376,12 @@ void
 LevelSetEquationTermContainer<TInputImage, TLevelSetContainer>::ComputeRequiredData(const LevelSetInputIndexType & iP,
                                                                                     LevelSetDataType & ioData)
 {
-  typename RequiredDataType::const_iterator dIt = m_RequiredData.begin();
-  typename RequiredDataType::const_iterator dEnd = m_RequiredData.end();
+  auto       dIt = m_RequiredData.begin();
+  const auto dEnd = m_RequiredData.end();
 
   auto tIt = m_Container.begin();
 
-  LevelSetPointer levelset = (tIt->second)->GetModifiableCurrentLevelSetPointer();
+  const LevelSetPointer levelset = (tIt->second)->GetModifiableCurrentLevelSetPointer();
 
   while (dIt != dEnd)
   {

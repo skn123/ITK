@@ -53,7 +53,7 @@ public:
   /** Dimension of the underlying image. */
   static constexpr unsigned int ImageDimension = InputImageType::ImageDimension;
 
-  itkTypeMacro(Inverse1DFFTImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(Inverse1DFFTImageFilter);
 
   /** Customized object creation methods that support configuration-based
    * selection of FFT implementation.
@@ -69,7 +69,7 @@ public:
   itkSetClampMacro(Direction, unsigned int, 0, InputImageType::ImageDimension - 1);
 
   /** Get the greatest supported prime factor. */
-  virtual SizeValueType
+  [[nodiscard]] virtual SizeValueType
   GetSizeGreatestPrimeFactor() const
   {
     return 2;
@@ -85,7 +85,7 @@ protected:
   void
   GenerateInputRequestedRegion() override;
   void
-  EnlargeOutputRequestedRegion(DataObject * output) override;
+  EnlargeOutputRequestedRegion(DataObject * out) override;
 
   /** Direction in which the filter is to be applied
    * this should be in the range [0,ImageDimension-1]. */

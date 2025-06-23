@@ -26,6 +26,8 @@ namespace itk
 {
 template <typename TInputImage, typename TOutputImage>
 InterpolateImageFilter<TInputImage, TOutputImage>::InterpolateImageFilter()
+  : m_IntermediateImage(nullptr)
+  , m_Distance(0.5)
 {
   // The filter requires two inputs
   this->SetNumberOfRequiredInputs(2);
@@ -37,9 +39,6 @@ InterpolateImageFilter<TInputImage, TOutputImage>::InterpolateImageFilter()
   m_Interpolator = static_cast<InterpolatorType *>(interpolator.GetPointer());
 
   // Set default distance to 0,5
-  m_Distance = 0.5;
-
-  m_IntermediateImage = nullptr;
   this->DynamicMultiThreadingOn();
   this->ThreaderUpdateProgressOff();
 }
@@ -72,30 +71,25 @@ InterpolateImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, 
   os << indent << "Distance: " << m_Distance << std::endl;
 }
 
-/**
- * Setup state of filter before multi-threading.
- * InterpolatorType::SetInputImage is not thread-safe and hence
- * has to be setup before ThreadedGenerateData
- */
 template <typename TInputImage, typename TOutputImage>
 void
 InterpolateImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
 {
   if (!m_Interpolator)
   {
-    itkExceptionMacro(<< "Interpolator not set");
+    itkExceptionMacro("Interpolator not set");
   }
 
   // Create intermediate image
   using IntermediateImageRegionType = typename IntermediateImageType::RegionType;
   using ImageRegionType = typename TOutputImage::RegionType;
 
-  ImageRegionType outputRegion = this->GetOutput()->GetRequestedRegion();
+  const ImageRegionType outputRegion = this->GetOutput()->GetRequestedRegion();
 
   IntermediateImageRegionType intermediateRegion;
 
   using RegionCopierType = ImageToImageFilterDetail::ImageRegionCopier<ImageDimension + 1, ImageDimension>;
-  RegionCopierType regionCopier;
+  const RegionCopierType regionCopier;
   regionCopier(intermediateRegion, outputRegion);
 
   intermediateRegion.SetIndex(ImageDimension, 0);
@@ -151,7 +145,7 @@ void
 InterpolateImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
-  OutputImagePointer outputPtr = this->GetOutput();
+  const OutputImagePointer outputPtr = this->GetOutput();
   using OutputIterator = ImageRegionIteratorWithIndex<TOutputImage>;
 
   using OutputPixelType = typename TOutputImage::PixelType;
@@ -182,7 +176,7 @@ InterpolateImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
     else
     {
       // should never be in here
-      itkExceptionMacro(<< "Index not within the intermediate buffer");
+      itkExceptionMacro("Index not within the intermediate buffer");
     }
 
     progress.CompletedPixel();

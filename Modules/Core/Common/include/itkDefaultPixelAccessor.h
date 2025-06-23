@@ -54,9 +54,6 @@ template <typename TType>
 class ITK_TEMPLATE_EXPORT DefaultPixelAccessor
 {
 public:
-  DefaultPixelAccessor() = default;
-  ~DefaultPixelAccessor() = default;
-
   /** External type alias. It defines the external aspect
    * that this class will exhibit. */
   using ExternalType = TType;
@@ -80,7 +77,7 @@ public:
   }
 
   /** Get a const reference to the pixel. */
-  inline const TType &
+  [[nodiscard]] inline const TType &
   Get(const TType & input) const
   {
     return input;

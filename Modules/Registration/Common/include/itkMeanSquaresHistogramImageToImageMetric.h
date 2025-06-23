@@ -51,8 +51,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(MeanSquaresHistogramImageToImageMetric, HistogramImageToImageMetric);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(MeanSquaresHistogramImageToImageMetric);
 
   /** Types transferred from the base class */
   using typename Superclass::RealType;
@@ -77,9 +77,10 @@ public:
 protected:
   /** Constructor is protected to ensure that \c New() function is used to
       create instances. */
+  /** @ITKStartGrouping */
   MeanSquaresHistogramImageToImageMetric() = default;
   ~MeanSquaresHistogramImageToImageMetric() override = default;
-
+  /** @ITKEndGrouping */
   /** Evaluates the sum of squared differences from the histogram. */
   MeasureType
   EvaluateMeasure(HistogramType & histogram) const override;

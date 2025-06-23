@@ -29,11 +29,6 @@ namespace itk
 /** \class QuadraticTriangleCell
  *  \brief Represents a second order triangular patch for a Mesh.
  *
- * \tparam TPixelType The type associated with a point, cell, or boundary
- * for use in storing its data.
- *
- * \tparam TCellTraits Type information of mesh containing cell.
- *
  * \ingroup MeshObjects
  * \ingroup ITKCommon
  */
@@ -46,11 +41,12 @@ public:
   ITK_DISALLOW_COPY_AND_MOVE(QuadraticTriangleCell);
 
   /** Standard class type aliases. */
+  /** @ITKStartGrouping */
   itkCellCommonTypedefs(QuadraticTriangleCell);
   itkCellInheritedTypedefs(TCellInterface);
-
-  /** Standard part of every itk Object. */
-  itkTypeMacro(QuadraticTriangleCell, CellInterface);
+  /** @ITKEndGrouping */
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(QuadraticTriangleCell);
 
   /** The type of boundary for this triangle's vertices. */
   using VertexType = VertexCell<TCellInterface>;
@@ -67,18 +63,19 @@ public:
   static constexpr unsigned int CellDimension = 2;
 
   /** Implement the standard CellInterface. */
-  CellGeometryEnum
+  /** @ITKStartGrouping */
+  [[nodiscard]] CellGeometryEnum
   GetType() const override
   {
     return CellGeometryEnum::QUADRATIC_TRIANGLE_CELL;
   }
   void
   MakeCopy(CellAutoPointer &) const override;
-
-  unsigned int
+  /** @ITKEndGrouping */
+  [[nodiscard]] unsigned int
   GetDimension() const override;
 
-  unsigned int
+  [[nodiscard]] unsigned int
   GetNumberOfPoints() const override;
 
   CellFeatureCount

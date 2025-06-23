@@ -53,8 +53,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
-  itkTypeMacro(GradientMagnitudeImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(GradientMagnitudeImageFilter);
 
   /** Extract some information from the image types.  Dimensionality
    * of the two images is assumed to be the same. */
@@ -90,10 +90,11 @@ public:
    * image in the computation of the derivatives. Use On to compute the
    * gradient in physical space; use Off to ignore image spacing and to
    * compute the gradient in isotropic voxel space. Default is On. */
+  /** @ITKStartGrouping */
   itkSetMacro(UseImageSpacing, bool);
   itkGetConstMacro(UseImageSpacing, bool);
   itkBooleanMacro(UseImageSpacing);
-
+  /** @ITKEndGrouping */
 #if !defined(ITK_FUTURE_LEGACY_REMOVE)
   /** Use the image spacing information in calculations. Use this option if you
    *  want derivatives in physical space. Default is UseImageSpacingOn.
@@ -114,11 +115,7 @@ public:
   }
 #endif
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   GradientMagnitudeImageFilter();

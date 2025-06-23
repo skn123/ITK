@@ -52,8 +52,8 @@ public:
   /** Method for creation through object factory */
   itkNewMacro(Self);
 
-  /** Run-time type information */
-  itkTypeMacro(LevelSetDomainMapImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(LevelSetDomainMapImageFilter);
 
   using InputImageType = TInputImage;
   using InputImageConstPointer = typename InputImageType::ConstPointer;
@@ -90,13 +90,13 @@ public:
       , m_IdList(std::move(iList))
     {}
 
-    const InputImageRegionType *
+    [[nodiscard]] const InputImageRegionType *
     GetRegion() const
     {
       return &(this->m_Region);
     }
 
-    const InputImagePixelType *
+    [[nodiscard]] const InputImagePixelType *
     GetIdList() const
     {
       return &(this->m_IdList);

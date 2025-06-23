@@ -23,9 +23,7 @@
 #include "itkFEMElement3DStrain.h"
 #include "ITKFEMExport.h"
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Element3DC0LinearTetrahedronStrain
@@ -51,8 +49,8 @@ public:
   /** Method for creation through the object factory. */
   itkSimpleNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Element3DC0LinearTetrahedronStrain, Element3DStrain<Element3DC0LinearTetrahedron>);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Element3DC0LinearTetrahedronStrain);
 
   /**
    * CreateAnother method will clone the existing instance of this type,
@@ -77,7 +75,6 @@ protected:
   PrintSelf(std::ostream & os, Indent indent) const override;
 
 }; // class Element3DC0LinearTetrahedronStrain
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMElement3DC0LinearTetrahedronStrain_h

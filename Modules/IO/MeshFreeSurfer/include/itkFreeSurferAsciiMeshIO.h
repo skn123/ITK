@@ -50,8 +50,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(FreeSurferAsciiMeshIO, MeshIOBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FreeSurferAsciiMeshIO);
 
   /*-------- This part of the interfaces deals with reading data. ----- */
 
@@ -115,7 +115,7 @@ protected:
   /** Write points to output stream */
   template <typename T>
   void
-  WritePoints(T * buffer, std::ofstream & outputFile, T label = itk::NumericTraits<T>::ZeroValue())
+  WritePoints(T * buffer, std::ofstream & outputFile, T label = T{})
   {
     outputFile.precision(6);
     SizeValueType index = 0;
@@ -129,9 +129,10 @@ protected:
     }
   }
 
+  /** Write cells to output stream */
   template <typename T>
   void
-  WriteCells(T * buffer, std::ofstream & outputFile, T label = itk::NumericTraits<T>::ZeroValue())
+  WriteCells(T * buffer, std::ofstream & outputFile, T label = T{})
   {
     constexpr unsigned int numberOfCellPoints = 3;
     SizeValueType          index = 0;
@@ -161,6 +162,7 @@ protected:
       {
         for (unsigned int jj = 0; jj < 3; ++jj)
         {
+
           /** point identifiers start from the third elements, first element is cellType, the second is numberOfPoints
            */
           output[ii * 3 + jj] = static_cast<TOutput>(input[5 * ii + jj + 2]);

@@ -111,14 +111,15 @@ public:
   using CovarianceMatrixType = typename ThresholdFunctionType::CovarianceMatrixType;
   using ScalarValueType = typename ThresholdFunctionType::ScalarValueType;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(VectorThresholdSegmentationLevelSetImageFilter, SegmentationLevelSetImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(VectorThresholdSegmentationLevelSetImageFilter);
 
   /** Method for creation through the object factory */
   itkNewMacro(Self);
 
   /** Set/Get mean and covariance that will be used to calculate the speed
     function */
+  /** @ITKStartGrouping */
   void
   SetMean(const MeanVectorType & mean)
   {
@@ -131,6 +132,7 @@ public:
   {
     return m_ThresholdFunction->GetMean();
   }
+  /** @ITKEndGrouping */
 
   void
   SetCovariance(const CovarianceMatrixType & cov)
@@ -145,7 +147,8 @@ public:
     return m_ThresholdFunction->GetCovariance();
   }
 
-  /** Set/Get the threshold for the Mahanalobis Distance */
+  /** Set/Get the threshold for the Mahalanobis Distance */
+  /** @ITKStartGrouping */
   void
   SetThreshold(ScalarValueType thr)
   {
@@ -158,6 +161,7 @@ public:
   {
     return m_ThresholdFunction->GetThreshold();
   }
+  /** @ITKEndGrouping */
 
 protected:
   ~VectorThresholdSegmentationLevelSetImageFilter() override = default;

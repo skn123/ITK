@@ -57,8 +57,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageToParametricSpaceFilter, ImageToMeshFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ImageToParametricSpaceFilter);
 
   /** Some type alias associated with the input images. */
   using InputImageType = TInputImage;
@@ -94,10 +94,11 @@ public:
    * That assumes that the type of PointData in the output
    * mesh is capable of accepting an itk::Index through
    * an operator=(). Default value = true */
+  /** @ITKStartGrouping */
   itkSetMacro(ComputeIndices, bool);
   itkGetConstMacro(ComputeIndices, bool);
   itkBooleanMacro(ComputeIndices);
-
+  /** @ITKEndGrouping */
 protected:
   ImageToParametricSpaceFilter();
   ~ImageToParametricSpaceFilter() override = default;

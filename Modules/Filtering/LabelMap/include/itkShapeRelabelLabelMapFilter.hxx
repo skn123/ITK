@@ -24,10 +24,8 @@ namespace itk
 {
 template <typename TImage>
 ShapeRelabelLabelMapFilter<TImage>::ShapeRelabelLabelMapFilter()
-{
-  m_ReverseOrdering = false;
-  m_Attribute = LabelObjectType::NUMBER_OF_PIXELS;
-}
+  : m_Attribute(LabelObjectType::NUMBER_OF_PIXELS)
+{}
 
 template <typename TImage>
 void
@@ -35,7 +33,7 @@ ShapeRelabelLabelMapFilter<TImage>::GenerateData()
 {
   switch (m_Attribute)
   {
-    itkShapeLabelMapFilterDispatchMacro() default : itkExceptionMacro(<< "Unknown attribute type");
+    itkShapeLabelMapFilterDispatchMacro() default : itkExceptionMacro("Unknown attribute type");
     break;
   }
 }

@@ -63,8 +63,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageSpatialObject, SpatialObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ImageSpatialObject);
 
   /** Reset the spatial object to its initial condition, yet preserves
    *   Id, Parent, and Child information */
@@ -99,30 +99,40 @@ public:
                        const std::string & name = "") const override;
 
   /** Returns the latest modified time of the object and its component. */
-  ModifiedTimeType
+  [[nodiscard]] ModifiedTimeType
   GetMTime() const override;
 
   /** Set the slice position */
+  /** @ITKStartGrouping */
   itkSetMacro(SliceNumber, IndexType);
   void
   SetSliceNumber(unsigned int dimension, int position);
-
+  /** @ITKEndGrouping */
   /** Get the slice position */
+  /** @ITKStartGrouping */
   itkGetConstMacro(SliceNumber, IndexType);
   int
   GetSliceNumber(unsigned int dimension)
   {
     return m_SliceNumber[dimension];
   }
-
+  /** @ITKEndGrouping */
 #if !defined(ITK_LEGACY_REMOVE)
-  itkLegacyMacro(const char * GetPixelTypeName()) { return m_PixelType.c_str(); }
+  itkLegacyMacro(const char * GetPixelTypeName())
+  {
+    return m_PixelType.c_str();
+  }
 #endif
 
   /** Set/Get the interpolator. */
+  /** @ITKStartGrouping */
   void
   SetInterpolator(InterpolatorType * interpolator);
   itkGetConstMacro(Interpolator, InterpolatorType *);
+  /** @ITKEndGrouping */
+  /** Updates the regions of this spatial object in accordance with its current image, and calls its Superclass. */
+  void
+  Update() override;
 
 protected:
   /** Compute the boundaries of the image spatial object. */
@@ -135,7 +145,7 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  typename LightObject::Pointer
+  [[nodiscard]] typename LightObject::Pointer
   InternalClone() const override;
 
 private:
@@ -148,6 +158,10 @@ private:
 #endif
 
   typename InterpolatorType::Pointer m_Interpolator{};
+
+  /** Updates the regions of this spatial object in accordance with its current image. */
+  void
+  UpdateImageRegions();
 
 #if !defined(ITK_LEGACY_REMOVE)
   template <typename T>

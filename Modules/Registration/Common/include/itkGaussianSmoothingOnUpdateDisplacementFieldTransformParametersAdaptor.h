@@ -45,9 +45,8 @@ public:
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(GaussianSmoothingOnUpdateDisplacementFieldTransformParametersAdaptor,
-               DisplacementFieldTransformParametersAdaptor);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(GaussianSmoothingOnUpdateDisplacementFieldTransformParametersAdaptor);
 
   using TransformType = TTransform;
   using ScalarType = typename TransformType::ScalarType;
@@ -55,16 +54,18 @@ public:
   /**
    * Get/Set the Gaussian smoothing standard deviation for the update field.
    */
+  /** @ITKStartGrouping */
   virtual void SetGaussianSmoothingVarianceForTheUpdateField(ScalarType);
   itkGetConstReferenceMacro(GaussianSmoothingVarianceForTheUpdateField, ScalarType);
-
+  /** @ITKEndGrouping */
   /**
    * Get/Set the Gaussian smoothing standard deviation for the total field.
    */
+  /** @ITKStartGrouping */
   virtual void
   SetGaussianSmoothingVarianceForTheTotalField(const ScalarType);
   itkGetConstReferenceMacro(GaussianSmoothingVarianceForTheTotalField, ScalarType);
-
+  /** @ITKEndGrouping */
   void
   AdaptTransformParameters() override;
 

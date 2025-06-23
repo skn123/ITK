@@ -24,13 +24,11 @@ namespace itk
 
 template <typename TFixedImage, typename TMovingSpatialObject>
 ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>::ImageToSpatialObjectMetric()
-
-{
-  m_FixedImage = nullptr;          // has to be provided by the user.
-  m_MovingSpatialObject = nullptr; // has to be provided by the user.
-  m_Transform = nullptr;           // has to be provided by the user.
-  m_Interpolator = nullptr;        // has to be provided by the user.
-}
+  : m_Transform(nullptr)
+  , m_Interpolator(nullptr)
+  , m_MovingSpatialObject(nullptr)
+  , m_FixedImage(nullptr)
+{}
 
 template <typename TFixedImage, typename TMovingSpatialObject>
 unsigned int
@@ -38,7 +36,7 @@ ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>::GetNumberOfParame
 {
   if (!m_Transform)
   {
-    itkExceptionMacro(<< "Transform is not present");
+    itkExceptionMacro("Transform is not present");
   }
   return m_Transform->GetNumberOfParameters();
 }
@@ -49,22 +47,22 @@ ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>::Initialize()
 {
   if (!m_Transform)
   {
-    itkExceptionMacro(<< "Transform is not present");
+    itkExceptionMacro("Transform is not present");
   }
 
   if (!m_Interpolator)
   {
-    itkExceptionMacro(<< "Interpolator is not present");
+    itkExceptionMacro("Interpolator is not present");
   }
 
   if (!m_MovingSpatialObject)
   {
-    itkExceptionMacro(<< "MovingSpatialObject is not present");
+    itkExceptionMacro("MovingSpatialObject is not present");
   }
 
   if (!m_FixedImage)
   {
-    itkExceptionMacro(<< "FixedImage is not present");
+    itkExceptionMacro("FixedImage is not present");
   }
 
   // If the image is provided by a source, update the source.

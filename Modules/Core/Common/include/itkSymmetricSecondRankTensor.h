@@ -104,13 +104,17 @@ public:
 
   /** Default-constructor.
    * \note The other five "special member functions" are defaulted implicitly, following the C++ "Rule of Zero". */
+#ifdef ITK_FUTURE_LEGACY_REMOVE
+  SymmetricSecondRankTensor() = default;
+#else
   SymmetricSecondRankTensor() { this->Fill(0); }
+#endif
 
   SymmetricSecondRankTensor(const ComponentType & r) { this->Fill(r); }
 
   /** Constructor to enable casting...  */
-  template <typename TCoordRepB>
-  SymmetricSecondRankTensor(const SymmetricSecondRankTensor<TCoordRepB, VDimension> & pa)
+  template <typename TCoordinateB>
+  SymmetricSecondRankTensor(const SymmetricSecondRankTensor<TCoordinateB, VDimension> & pa)
     : BaseArray(pa)
   {}
 
@@ -122,9 +126,9 @@ public:
   {}
 
   /** Templated Pass-through assignment  for the Array base class. */
-  template <typename TCoordRepB>
+  template <typename TCoordinateB>
   Self &
-  operator=(const SymmetricSecondRankTensor<TCoordRepB, VDimension> & pa)
+  operator=(const SymmetricSecondRankTensor<TCoordinateB, VDimension> & pa)
   {
     BaseArray::operator=(pa);
     return *this;
@@ -152,7 +156,8 @@ public:
   operator-=(const Self & r);
 
   /** Arithmetic operations between tensors and scalars */
-  Self operator*(const RealValueType & r) const;
+  Self
+  operator*(const RealValueType & r) const;
 
   Self
   operator/(const RealValueType & r) const;
@@ -171,7 +176,7 @@ public:
   }
 
   /** Return the value for the Nth component. */
-  ComponentType
+  [[nodiscard]] ComponentType
   GetNthComponent(int c) const
   {
     return this->operator[](c);
@@ -197,7 +202,7 @@ public:
   SetIdentity();
 
   /** Get Trace value */
-  AccumulateValueType
+  [[nodiscard]] AccumulateValueType
   GetTrace() const;
 
   /** Return an array containing EigenValues. */
@@ -212,6 +217,7 @@ public:
   /** Returns the tensor rotated by the provided matrix.
    *  ResultingTensor = Matrix * ThisTensor * Matrix.GetTranspose()
    */
+  /** @ITKStartGrouping */
   template <typename TMatrixValueType>
   Self
   Rotate(const Matrix<TMatrixValueType, VDimension, VDimension> & m) const;
@@ -227,13 +233,14 @@ public:
   {
     return this->Rotate(static_cast<Matrix<TMatrixValueType>>(m));
   }
+  /** @ITKEndGrouping */
 
   /** Pre-Multiply by a Matrix as ResultingMatrix = Matrix * ThisTensor. */
-  MatrixType
+  [[nodiscard]] MatrixType
   PreMultiply(const MatrixType & m) const;
 
   /** Post-Multiply by a Matrix as ResultingMatrix = ThisTensor * Matrix. */
-  MatrixType
+  [[nodiscard]] MatrixType
   PostMultiply(const MatrixType & m) const;
 
 private:
@@ -254,7 +261,7 @@ operator>>(InputStreamType & is, SymmetricSecondRankTensor<TComponent, VDimensio
 
 template <typename T>
 inline void
-swap(SymmetricSecondRankTensor<T> & a, SymmetricSecondRankTensor<T> & b)
+swap(SymmetricSecondRankTensor<T> & a, SymmetricSecondRankTensor<T> & b) noexcept
 {
   a.swap(b);
 }

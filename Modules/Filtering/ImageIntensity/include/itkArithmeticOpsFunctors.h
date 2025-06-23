@@ -20,22 +20,17 @@
 
 #include "itkMath.h"
 
-namespace itk
-{
-namespace Functor
+namespace itk::Functor
 {
 
 /**
  * \class Add2
- * \brief
  * \ingroup ITKImageIntensity
  */
 template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInput1>
 class ITK_TEMPLATE_EXPORT Add2
 {
 public:
-  Add2() = default;
-  ~Add2() = default;
   bool
   operator==(const Add2 &) const
   {
@@ -61,8 +56,6 @@ template <typename TInput1, typename TInput2, typename TInput3, typename TOutput
 class ITK_TEMPLATE_EXPORT Add3
 {
 public:
-  Add3() = default;
-  ~Add3() = default;
   bool
   operator==(const Add3 &) const
   {
@@ -88,8 +81,6 @@ template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInpu
 class ITK_TEMPLATE_EXPORT Sub2
 {
 public:
-  Sub2() = default;
-  ~Sub2() = default;
   bool
   operator==(const Sub2 &) const
   {
@@ -115,8 +106,6 @@ template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInpu
 class ITK_TEMPLATE_EXPORT Mult
 {
 public:
-  Mult() = default;
-  ~Mult() = default;
   bool
   operator==(const Mult &) const
   {
@@ -142,8 +131,6 @@ template <typename TInput1, typename TInput2, typename TOutput>
 class ITK_TEMPLATE_EXPORT Div
 {
 public:
-  Div() = default;
-  ~Div() = default;
   bool
   operator==(const Div &) const
   {
@@ -155,14 +142,12 @@ public:
   inline TOutput
   operator()(const TInput1 & A, const TInput2 & B) const
   {
-    if (itk::Math::NotAlmostEquals(B, NumericTraits<TInput2>::ZeroValue()))
+    if (itk::Math::NotAlmostEquals(B, TInput2{}))
     {
       return (TOutput)(A / B);
     }
-    else
-    {
-      return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
-    }
+
+    return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
   }
 };
 
@@ -177,10 +162,9 @@ class ITK_TEMPLATE_EXPORT DivideOrZeroOut
 {
 public:
   DivideOrZeroOut()
-  {
-    m_Threshold = 1e-5 * NumericTraits<TDenominator>::OneValue();
-    m_Constant = NumericTraits<TOutput>::ZeroValue();
-  };
+    : m_Threshold(1e-5 * NumericTraits<TDenominator>::OneValue())
+    , m_Constant(TOutput{})
+  {}
 
   ~DivideOrZeroOut() = default;
 
@@ -217,9 +201,6 @@ template <typename TInput1, typename TInput2, typename TOutput>
 class ITK_TEMPLATE_EXPORT Modulus
 {
 public:
-  Modulus() = default;
-  ~Modulus() = default;
-
   bool
   operator==(const Modulus &) const
   {
@@ -231,14 +212,12 @@ public:
   inline TOutput
   operator()(const TInput1 & A, const TInput2 & B) const
   {
-    if (B != NumericTraits<TInput2>::ZeroValue())
+    if (B != TInput2{})
     {
       return static_cast<TOutput>(A % B);
     }
-    else
-    {
-      return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
-    }
+
+    return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
   }
 };
 
@@ -317,10 +296,8 @@ public:
       {
         return NumericTraits<TOutput>::max(A);
       }
-      else
-      {
-        return NumericTraits<TOutput>::NonpositiveMin(A);
-      }
+
+      return NumericTraits<TOutput>::NonpositiveMin(A);
     }
     return static_cast<TOutput>(temp);
   }
@@ -368,8 +345,6 @@ template <class TInput1, class TOutput = TInput1>
 class UnaryMinus
 {
 public:
-  UnaryMinus() = default;
-  ~UnaryMinus() = default;
   bool
   operator==(const UnaryMinus &) const
   {
@@ -384,7 +359,7 @@ public:
     return (TOutput)(-A);
   }
 };
-} // namespace Functor
-} // namespace itk
+} // namespace itk::Functor
+
 
 #endif

@@ -46,15 +46,13 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Polyline
   // throw an exception otherwise.
   if ((TInputImage::ImageDimension != 3) || (TOutputImage::ImageDimension != 3))
   {
-    itkExceptionMacro(<< "PolylineMaskImageFilter must be templated over "
-                      << "input and output images of dimension 3");
+    itkExceptionMacro("PolylineMaskImageFilter must be templated over input and output images of dimension 3");
   }
 
   // View vectors must be of dimension 3
   if (TVector::Length != 3)
   {
-    itkExceptionMacro(<< "PolylineMaskImageFilter must be templated over "
-                      << "a view vector of length 3");
+    itkExceptionMacro("PolylineMaskImageFilter must be templated over a view vector of length 3");
   }
 }
 
@@ -88,23 +86,20 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
   nViewVector = m_ViewVector;
   nViewVector.Normalize();
 
-  itkDebugMacro(<< "Normalized Up vector" << nUpVector);
-  itkDebugMacro(<< "Normalized View vector" << nViewVector);
+  itkDebugMacro("Normalized Up vector" << nUpVector);
+  itkDebugMacro("Normalized View vector" << nViewVector);
 
   // Orthogonalize nUpVector and nViewVector
-  TVector nOrthogonalVector;
+  TVector nOrthogonalVector = nUpVector - (nViewVector * (nUpVector * nViewVector));
 
-  nOrthogonalVector = nUpVector - (nViewVector * (nUpVector * nViewVector));
-
-  itkDebugMacro(<< "Up vector component orthogonal to View vector " << nOrthogonalVector);
+  itkDebugMacro("Up vector component orthogonal to View vector " << nOrthogonalVector);
 
   // Perform the cross product and determine a third coordinate axis
   // orthogonal to both nOrthogonalVector and nViewVector.
 
-  TVector nThirdAxis;
-  nThirdAxis = itk::CrossProduct(nOrthogonalVector, nViewVector);
+  TVector nThirdAxis = itk::CrossProduct(nOrthogonalVector, nViewVector);
 
-  itkDebugMacro(<< "Third basis vector" << nThirdAxis);
+  itkDebugMacro("Third basis vector" << nThirdAxis);
 
   // Populate the rotation matrix using the unit vectors of the
   // camera reference coordinate system.
@@ -138,7 +133,7 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Transfor
 
   ProjPlanePointType result;
 
-  double factor = m_FocalDistance / (rotated[2]);
+  const double factor = m_FocalDistance / (rotated[2]);
 
   result[0] = m_FocalPoint[0] + (rotated[0] * factor);
   result[1] = m_FocalPoint[1] + (rotated[1] * factor);
@@ -163,12 +158,12 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
 
   using OriginType = Point<double, 3>;
 
-  typename TInputImage::ConstPointer inputImagePtr(dynamic_cast<const TInputImage *>(this->ProcessObject::GetInput(0)));
-  typename TPolyline::ConstPointer   polylinePtr(dynamic_cast<const TPolyline *>(this->ProcessObject::GetInput(1)));
-  typename TOutputImage::Pointer     outputImagePtr(dynamic_cast<TOutputImage *>(this->ProcessObject::GetOutput(0)));
+  const typename TInputImage::ConstPointer inputImagePtr(
+    dynamic_cast<const TInputImage *>(this->ProcessObject::GetInput(0)));
+  const typename TPolyline::ConstPointer polylinePtr(dynamic_cast<const TPolyline *>(this->ProcessObject::GetInput(1)));
+  const typename TOutputImage::Pointer outputImagePtr(dynamic_cast<TOutputImage *>(this->ProcessObject::GetOutput(0)));
 
-  OriginType originInput;
-  originInput.Fill(0.0);
+  constexpr OriginType originInput{};
   // outputImagePtr->SetOrigin(inputImagePtr->GetOrigin());
   outputImagePtr->SetOrigin(originInput);
   outputImagePtr->SetSpacing(inputImagePtr->GetSpacing());
@@ -177,7 +172,7 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
   outputImagePtr->SetRequestedRegion(inputImagePtr->GetRequestedRegion());
   outputImagePtr->SetBufferedRegion(inputImagePtr->GetBufferedRegion());
   outputImagePtr->SetLargestPossibleRegion(inputImagePtr->GetLargestPossibleRegion());
-  outputImagePtr->Allocate(true); // initialize buffer to zero
+  outputImagePtr->AllocateInitialized();
 
   InputImageConstIteratorType inputIt(inputImagePtr, inputImagePtr->GetLargestPossibleRegion());
   OutputImageIteratorType     outputIt(outputImagePtr, outputImagePtr->GetLargestPossibleRegion());
@@ -288,23 +283,21 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
 
   if (!boundingBox->ComputeBoundingBox())
   {
-    itkExceptionMacro(<< "Bounding box computation error");
+    itkExceptionMacro("Bounding box computation error");
   }
 
   const BoundingBoxType::BoundsArrayType & bounds = boundingBox->GetBounds();
-  itkDebugMacro(<< "Projection image bounding box=" << bounds);
+  itkDebugMacro("Projection image bounding box=" << bounds);
 
   ProjectionImageIndexType projectionStart;
   projectionStart[0] = 0;
   projectionStart[1] = 0;
 
   ProjectionImageSizeType projectionSize;
-  IndexValueType          pad;
+  const IndexValueType    pad = 5;
 
-  pad = 5;
-
-  projectionSize[0] = (IndexValueType)(bounds[1] - bounds[0]) + pad;
-  projectionSize[1] = (IndexValueType)(bounds[3] - bounds[2]) + pad;
+  projectionSize[0] = static_cast<IndexValueType>(bounds[1] - bounds[0]) + pad;
+  projectionSize[1] = static_cast<IndexValueType>(bounds[3] - bounds[2]) + pad;
 
   const ProjectionImageRegionType projectionRegion(projectionStart, projectionSize);
 
@@ -323,17 +316,17 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
 
   projectionImagePtr->SetSpacing(spacing);
 
-  itkDebugMacro(<< "Projection image size:" << projectionSize);
-  itkDebugMacro(<< "Projection image start index:" << projectionStart);
-  itkDebugMacro(<< "Projection image origin:" << origin);
+  itkDebugMacro("Projection image size:" << projectionSize);
+  itkDebugMacro("Projection image start index:" << projectionStart);
+  itkDebugMacro("Projection image origin:" << origin);
 
   projectionImagePtr->SetRegions(projectionRegion);
-  projectionImagePtr->Allocate(true); // initialize buffer to zero
+  projectionImagePtr->AllocateInitialized();
 
   using ProjectionImageIteratorType = ImageRegionIterator<ProjectionImageType>;
-  ProjectionImageIteratorType projectionIt(projectionImagePtr, projectionImagePtr->GetLargestPossibleRegion());
+  const ProjectionImageIteratorType projectionIt(projectionImagePtr, projectionImagePtr->GetLargestPossibleRegion());
 
-  itkDebugMacro(<< "Rotation matrix" << m_RotationMatrix);
+  itkDebugMacro("Rotation matrix" << m_RotationMatrix);
 
   const VertexListType * container = polylinePtr->GetVertexList();
 
@@ -344,9 +337,6 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
   VertexType endIndex;
   VertexType projectionIndex;
   VertexType pstartIndex;
-
-  // Define a flag to indicate the line segment slope
-  bool pflag;
 
   // Define background, foreground, and unlabeled pixel values
   auto u_val = static_cast<ProjectionImagePixelType>(0);
@@ -371,7 +361,8 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
 
   while (piter != container->End())
   {
-    pflag = false;
+    // Define a flag to indicate the line segment slope
+    bool pflag = false;
     startIndex = projectionIndex;
     endIndex = piter.Value();
 
@@ -386,7 +377,7 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
       pflag = true;
     }
 
-    itkDebugMacro(<< "Polyline:" << startImageIndex << ',' << endImageIndex);
+    itkDebugMacro("Polyline:" << startImageIndex << ',' << endImageIndex);
     LineIteratorType it(projectionImagePtr, startImageIndex, endImageIndex);
     it.GoToBegin();
 
@@ -420,7 +411,7 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
   }
 
   // Close the polygon
-  pflag = false;
+  bool pflag = false;
   startIndex = projectionIndex;
   endIndex = pstartIndex;
 
@@ -480,7 +471,7 @@ PolylineMaskImageFilter<TInputImage, TPolyline, TVector, TOutputImage>::Generate
 
     if (!projectionImagePtr->GetBufferedRegion().IsInside(projectionImageIndex))
     {
-      itkExceptionMacro(<< "Projection Image index out of bound:" << projectionImageIndex);
+      itkExceptionMacro("Projection Image index out of bound:" << projectionImageIndex);
     }
 
     if (projectionImagePtr->GetPixel(projectionImageIndex) == f_val)

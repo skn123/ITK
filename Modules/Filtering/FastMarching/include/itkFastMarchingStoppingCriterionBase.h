@@ -50,15 +50,15 @@ public:
   using OutputDomainType = typename Traits::OutputDomainType;
   using OutputDomainPointer = typename Traits::OutputDomainPointer;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(FastMarchingStoppingCriterionBase, StoppingCriterionBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FastMarchingStoppingCriterionBase);
 
   /** Reinitialize internal values. */
   void
   Reinitialize()
   {
-    m_CurrentValue = NumericTraits<OutputPixelType>::ZeroValue();
-    m_PreviousValue = NumericTraits<OutputPixelType>::ZeroValue();
+    m_CurrentValue = OutputPixelType{};
+    m_PreviousValue = OutputPixelType{};
 
     this->Reset();
   }
@@ -78,10 +78,9 @@ protected:
   FastMarchingStoppingCriterionBase()
     : Superclass()
     , m_Domain(nullptr)
-  {
-    m_CurrentValue = NumericTraits<OutputPixelType>::ZeroValue();
-    m_PreviousValue = NumericTraits<OutputPixelType>::ZeroValue();
-  }
+    , m_PreviousValue(OutputPixelType{})
+    , m_CurrentValue(OutputPixelType{})
+  {}
 
   /** Destructor */
   ~FastMarchingStoppingCriterionBase() override = default;

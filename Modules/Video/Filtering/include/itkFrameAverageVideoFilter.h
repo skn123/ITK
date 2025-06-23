@@ -56,19 +56,21 @@ public:
 
   itkNewMacro(Self);
 
-  itkTypeMacro(FrameAverageVideoFilter, VideoToVideoFilter);
+  itkOverrideGetNameOfClassMacro(FrameAverageVideoFilter);
 
   /** Get/Set the number of frames to average over */
+  /** @ITKStartGrouping */
   void
   SetNumberOfFrames(SizeValueType numFrames);
   SizeValueType
   GetNumberOfFrames();
-
+  /** @ITKEndGrouping */
 protected:
   /** Constructor and Destructor */
+  /** @ITKStartGrouping */
   FrameAverageVideoFilter();
   ~FrameAverageVideoFilter() override = default;
-
+  /** @ITKEndGrouping */
   /** PrintSelf */
   void
   PrintSelf(std::ostream & os, Indent indent) const override;

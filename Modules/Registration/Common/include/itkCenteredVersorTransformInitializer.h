@@ -53,8 +53,8 @@ public:
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(CenteredVersorTransformInitializer, CenteredTransformInitializer);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(CenteredVersorTransformInitializer);
 
   /** Type of the transform to initialize */
   using typename Superclass::TransformType;
@@ -86,10 +86,11 @@ public:
 
   /** Enable the use of the principal axes of each image to compute an
    * initial rotation that will align them. */
+  /** @ITKStartGrouping */
   itkSetMacro(ComputeRotation, bool);
   itkGetMacro(ComputeRotation, bool);
   itkBooleanMacro(ComputeRotation);
-
+  /** @ITKEndGrouping */
 protected:
   CenteredVersorTransformInitializer();
   ~CenteredVersorTransformInitializer() override = default;

@@ -83,8 +83,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(TriangleMeshCurvatureCalculator, Object);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(TriangleMeshCurvatureCalculator);
 
   /** Convenient type alias for this Calculator. */
   using InputMeshType = TInputMesh;
@@ -102,9 +102,10 @@ public:
   using CurvaturesEnum = TriangleMeshCurvatureCalculatorEnums::Curvatures;
 
   /** Methods specify mode of operation for the calculator. */
+  /** @ITKStartGrouping */
   itkSetMacro(CurvatureType, TriangleMeshCurvatureCalculatorEnums::Curvatures);
   itkGetConstMacro(CurvatureType, TriangleMeshCurvatureCalculatorEnums::Curvatures);
-
+  /** @ITKEndGrouping */
   /** Set the input mesh. */
   itkSetObjectMacro(TriangleMesh, InputMeshType);
 
@@ -131,7 +132,7 @@ protected:
 
   /** Discrete Gauss curvature (K) computation */
   void
-  ComputeGaussCurvature(const InputMeshType * input);
+  ComputeGaussCurvature(const InputMeshType * inputMesh);
 
 private:
   CurvaturesEnum               m_CurvatureType = CurvaturesEnum::GaussCurvature;

@@ -29,26 +29,23 @@ BasicErodeImageFilter<TInputImage, TOutputImage, TKernel>::BasicErodeImageFilter
 }
 
 template <typename TInputImage, typename TOutputImage, typename TKernel>
-typename BasicErodeImageFilter<TInputImage, TOutputImage, TKernel>::PixelType
+auto
 BasicErodeImageFilter<TInputImage, TOutputImage, TKernel>::Evaluate(const NeighborhoodIteratorType & nit,
                                                                     const KernelIteratorType         kernelBegin,
-                                                                    const KernelIteratorType         kernelEnd)
+                                                                    const KernelIteratorType kernelEnd) -> PixelType
 {
-  unsigned int i;
-  PixelType    min = NumericTraits<PixelType>::max();
-  PixelType    temp;
+  PixelType min = NumericTraits<PixelType>::max();
 
-  KernelIteratorType kernel_it;
-
-  for (i = 0, kernel_it = kernelBegin; kernel_it < kernelEnd; ++kernel_it, ++i)
+  KernelIteratorType kernel_it = kernelBegin;
+  for (unsigned int i = 0; kernel_it < kernelEnd; ++kernel_it, ++i)
   {
     // if structuring element is positive, use the pixel under that element
     // in the image
-    if (*kernel_it > NumericTraits<KernelPixelType>::ZeroValue())
+    if (*kernel_it > KernelPixelType{})
     {
       // note we use GetPixel() on the NeighborhoodIterator in order
       // to respect boundary conditions.
-      temp = nit.GetPixel(i);
+      const auto temp = nit.GetPixel(i);
 
       if (temp < min)
       {

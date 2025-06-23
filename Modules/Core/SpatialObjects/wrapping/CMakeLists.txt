@@ -1,6 +1,7 @@
 itk_wrap_module(ITKSpatialObjects)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkSpatialObjectProperty
   itkSpatialObjectBase
   itkSpatialObjectPoint

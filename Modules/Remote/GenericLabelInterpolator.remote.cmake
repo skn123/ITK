@@ -41,9 +41,10 @@
 #-- ### Please document here any justification for the criteria above
 #       Code style enforced by clang-format on 2020-02-19, and clang-tidy modernizations completed
 
-itk_fetch_module(GenericLabelInterpolator
+itk_fetch_module(
+  GenericLabelInterpolator
   "A generic interpolator for multi-label images."
   MODULE_COMPLIANCE_LEVEL 2
-  GIT_REPOSITORY ${git_protocol}://github.com/InsightSoftwareConsortium/ITKGenericLabelInterpolator.git
-  GIT_TAG 22baf90c8cc404fc1e090142ead755f3f2253198
+  GIT_REPOSITORY https://github.com/InsightSoftwareConsortium/ITKGenericLabelInterpolator.git
+  GIT_TAG 70b9ccc9a897043f66b7cd198343e3f5252a3d32
   )

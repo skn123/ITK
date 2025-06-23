@@ -25,9 +25,7 @@
 #include "itkArray.h"
 #include "ITKStatisticsExport.h"
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 /**
  * \class DecisionRule
@@ -56,8 +54,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods) */
-  itkTypeMacro(DecisionRule, Object);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(DecisionRule);
 
   /** Types for discriminant values and vectors. */
   using MembershipValueType = double;
@@ -78,7 +76,6 @@ protected:
   DecisionRule();
   ~DecisionRule() override;
 }; // end of class
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #endif

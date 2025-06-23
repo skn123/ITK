@@ -64,8 +64,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Rigid2DTransform, MatrixOffsetTransformBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Rigid2DTransform);
 
   /** New macro for creation of through a Smart Pointer */
   itkNewMacro(Self);
@@ -192,6 +192,7 @@ public:
   /** Set/Get the angle of rotation in radians. These methods
    * are old and are retained for backward compatibility.
    * Instead, use SetAngle() and GetAngle(). */
+  /** @ITKStartGrouping */
   void
   SetRotation(TParametersValueType angle)
   {
@@ -202,7 +203,7 @@ public:
   {
     return m_Angle;
   }
-
+  /** @ITKEndGrouping */
   /** Set the transformation from a container of parameters
    * This is typically used by optimizers.
    * There are 3 parameters. The first one represents the
@@ -296,41 +297,42 @@ private:
 
 // Back transform a point
 template <typename TParametersValueType>
-inline typename Rigid2DTransform<TParametersValueType>::InputPointType
-Rigid2DTransform<TParametersValueType>::BackTransform(const OutputPointType & point) const
+inline auto
+Rigid2DTransform<TParametersValueType>::BackTransform(const OutputPointType & point) const -> InputPointType
 {
-  itkWarningMacro(<< "BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
-                     "to generate an inverse transform and then perform the transform using that inverted transform.");
+  itkWarningMacro("BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
+                  "to generate an inverse transform and then perform the transform using that inverted transform.");
   return this->GetInverseMatrix() * (point - this->GetOffset());
 }
 
 // Back transform a vector
 template <typename TParametersValueType>
-inline typename Rigid2DTransform<TParametersValueType>::InputVectorType
-Rigid2DTransform<TParametersValueType>::BackTransform(const OutputVectorType & vect) const
+inline auto
+Rigid2DTransform<TParametersValueType>::BackTransform(const OutputVectorType & vect) const -> InputVectorType
 {
-  itkWarningMacro(<< "BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
-                     "to generate an inverse transform and then perform the transform using that inverted transform.");
+  itkWarningMacro("BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
+                  "to generate an inverse transform and then perform the transform using that inverted transform.");
   return this->GetInverseMatrix() * vect;
 }
 
 // Back transform a vnl_vector
 template <typename TParametersValueType>
-inline typename Rigid2DTransform<TParametersValueType>::InputVnlVectorType
-Rigid2DTransform<TParametersValueType>::BackTransform(const OutputVnlVectorType & vect) const
+inline auto
+Rigid2DTransform<TParametersValueType>::BackTransform(const OutputVnlVectorType & vect) const -> InputVnlVectorType
 {
-  itkWarningMacro(<< "BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
-                     "to generate an inverse transform and then perform the transform using that inverted transform.");
+  itkWarningMacro("BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
+                  "to generate an inverse transform and then perform the transform using that inverted transform.");
   return this->GetInverseMatrix() * vect;
 }
 
 // Back Transform a CovariantVector
 template <typename TParametersValueType>
-inline typename Rigid2DTransform<TParametersValueType>::InputCovariantVectorType
+inline auto
 Rigid2DTransform<TParametersValueType>::BackTransform(const OutputCovariantVectorType & vect) const
+  -> InputCovariantVectorType
 {
-  itkWarningMacro(<< "BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
-                     "to generate an inverse transform and then perform the transform using that inverted transform.");
+  itkWarningMacro("BackTransform(): This method is slated to be removed from ITK.  Instead, please use GetInverse() "
+                  "to generate an inverse transform and then perform the transform using that inverted transform.");
   return this->GetMatrix() * vect;
 }
 

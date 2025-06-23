@@ -22,9 +22,7 @@
 #include "itkNumericTraits.h"
 #include "ITKStatisticsExport.h"
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 /** \class ChiSquareDistribution
  * \brief ChiSquareDistribution class defines the interface for a
@@ -66,8 +64,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Standard macros */
-  itkTypeMacro(ChiSquareDistribution, ProbabilityDistribution);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ChiSquareDistribution);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -233,7 +231,6 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 }; // end of class
-} // end of namespace Statistics
-} // end namespace itk
+} // namespace itk::Statistics
 
 #endif

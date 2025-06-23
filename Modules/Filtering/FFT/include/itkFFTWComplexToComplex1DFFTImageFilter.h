@@ -65,8 +65,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(FFTWComplexToComplex1DFFTImageFilter, ComplexToComplex1DFFTImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FFTWComplexToComplex1DFFTImageFilter);
 
 
 protected:
@@ -80,7 +80,7 @@ protected:
 
   /** Override to return a splitter that does not split along the direction we
    *  are performing the transform. */
-  const ImageRegionSplitterBase *
+  [[nodiscard]] const ImageRegionSplitterBase *
   GetImageRegionSplitter() const override;
 
 private:

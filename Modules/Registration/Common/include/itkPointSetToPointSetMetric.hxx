@@ -24,11 +24,10 @@ namespace itk
 
 template <typename TFixedPointSet, typename TMovingPointSet>
 PointSetToPointSetMetric<TFixedPointSet, TMovingPointSet>::PointSetToPointSetMetric()
-{
-  m_FixedPointSet = nullptr;  // has to be provided by the user.
-  m_MovingPointSet = nullptr; // has to be provided by the user.
-  m_Transform = nullptr;      // has to be provided by the user.
-}
+  : m_FixedPointSet(nullptr)
+  , m_MovingPointSet(nullptr)
+  , m_Transform(nullptr)
+{}
 
 template <typename TFixedPointSet, typename TMovingPointSet>
 void
@@ -37,7 +36,7 @@ PointSetToPointSetMetric<TFixedPointSet, TMovingPointSet>::SetTransformParameter
 {
   if (!m_Transform)
   {
-    itkExceptionMacro(<< "Transform has not been assigned");
+    itkExceptionMacro("Transform has not been assigned");
   }
   m_Transform->SetParameters(parameters);
 }
@@ -48,17 +47,17 @@ PointSetToPointSetMetric<TFixedPointSet, TMovingPointSet>::Initialize()
 {
   if (!m_Transform)
   {
-    itkExceptionMacro(<< "Transform is not present");
+    itkExceptionMacro("Transform is not present");
   }
 
   if (!m_MovingPointSet)
   {
-    itkExceptionMacro(<< "MovingPointSet is not present");
+    itkExceptionMacro("MovingPointSet is not present");
   }
 
   if (!m_FixedPointSet)
   {
-    itkExceptionMacro(<< "FixedPointSet is not present");
+    itkExceptionMacro("FixedPointSet is not present");
   }
 
   // If the PointSet is provided by a source, update the source.

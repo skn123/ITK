@@ -23,10 +23,9 @@ namespace itk
 template <typename TParametersValueType, unsigned int VDimension>
 ElasticBodyReciprocalSplineKernelTransform<TParametersValueType,
                                            VDimension>::ElasticBodyReciprocalSplineKernelTransform()
-{
   // Alpha = 8 ( 1 - \nu ) - 1
-  m_Alpha = 8.0 * (1.0 - .25) - 1;
-}
+  : m_Alpha(8.0 * (1.0 - .25) - 1)
+{}
 
 template <typename TParametersValueType, unsigned int VDimension>
 void
@@ -34,7 +33,7 @@ ElasticBodyReciprocalSplineKernelTransform<TParametersValueType, VDimension>::Co
                                                                                        GMatrixType & gmatrix) const
 {
   const TParametersValueType r = x.GetNorm();
-  const TParametersValueType factor = (r > 1e-8) ? (-1.0 / r) : NumericTraits<TParametersValueType>::ZeroValue();
+  const TParametersValueType factor = (r > 1e-8) ? (-1.0 / r) : TParametersValueType{};
   const TParametersValueType radial = m_Alpha * r;
 
   for (unsigned int i = 0; i < VDimension; ++i)

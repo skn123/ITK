@@ -67,6 +67,7 @@ public:
 
   /** Standard class type aliases. */
   using Self = ParametricPath;
+
   /** All paths must be mappable to index space */
   using ContinuousIndexType = ContinuousIndex<SpacePrecisionType, VDimension>;
   using Superclass = Path<double, ContinuousIndexType, VDimension>;
@@ -74,8 +75,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ParametricPath, Path);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ParametricPath);
 
   /** Input type */
   using typename Superclass::InputType;

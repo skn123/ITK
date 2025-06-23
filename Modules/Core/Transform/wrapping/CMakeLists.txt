@@ -1,6 +1,7 @@
 itk_wrap_module(ITKTransform)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkCompositeTransform
   itkTransformBase
   itkMatrixOffsetTransformBase

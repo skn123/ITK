@@ -35,12 +35,9 @@ itkImageIteratorsForwardBackwardTest(int, char *[])
   size[1] = 4;
   size[2] = 4;
 
-  ImageType::IndexType start;
-  start.Fill(0);
+  constexpr ImageType::IndexType start{};
 
-  ImageType::RegionType region;
-  region.SetIndex(start);
-  region.SetSize(size);
+  const ImageType::RegionType region{ start, size };
 
   myImage->SetRegions(region);
   myImage->Allocate();
@@ -51,9 +48,7 @@ itkImageIteratorsForwardBackwardTest(int, char *[])
 
   IteratorType it(myImage, region);
 
-  ImageType::PixelType value;
-
-  value = itk::NumericTraits<ImageType::PixelType>::ZeroValue();
+  auto value = ImageType::PixelType{};
 
   // Store information on the Image
   std::cout << "Storing data on the image ... " << std::endl;
@@ -70,7 +65,7 @@ itkImageIteratorsForwardBackwardTest(int, char *[])
   IteratorType ot(myImage, region);
   std::cout << "Verifying the data forwards... ";
 
-  value = itk::NumericTraits<ImageType::PixelType>::ZeroValue();
+  value = ImageType::PixelType{};
 
   while (!ot.IsAtEnd())
   {
@@ -120,7 +115,7 @@ itkImageIteratorsForwardBackwardTest(int, char *[])
   ConstIteratorType cot(myImage, region);
   std::cout << "Const Iterator: Verifying the data forwards... ";
 
-  value = itk::NumericTraits<ImageType::PixelType>::ZeroValue();
+  value = ImageType::PixelType{};
 
   while (!cot.IsAtEnd())
   {

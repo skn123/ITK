@@ -21,9 +21,7 @@
 #include "itkProgressReporter.h"
 #include "itkImageRegionConstIterator.h"
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 template <typename TImage, typename TMaskImage>
 MaskedImageToHistogramFilter<TImage, TMaskImage>::MaskedImageToHistogramFilter()
@@ -37,11 +35,11 @@ void
 MaskedImageToHistogramFilter<TImage, TMaskImage>::ThreadedComputeMinimumAndMaximum(
   const RegionType & inputRegionForThread)
 {
-  unsigned int                   nbOfComponents = this->GetInput()->GetNumberOfComponentsPerPixel();
+  const unsigned int             nbOfComponents = this->GetInput()->GetNumberOfComponentsPerPixel();
   HistogramMeasurementVectorType min(nbOfComponents);
   HistogramMeasurementVectorType max(nbOfComponents);
 
-  MaskPixelType maskValue = this->GetMaskValue();
+  const MaskPixelType maskValue = this->GetMaskValue();
 
   ImageRegionConstIterator<TImage>     inputIt(this->GetInput(), inputRegionForThread);
   ImageRegionConstIterator<TMaskImage> maskIt(this->GetMaskImage(), inputRegionForThread);
@@ -66,7 +64,7 @@ MaskedImageToHistogramFilter<TImage, TMaskImage>::ThreadedComputeMinimumAndMaxim
     ++inputIt;
     ++maskIt;
   }
-  const std::lock_guard mutexHolder(this->m_Mutex);
+  const std::lock_guard<std::mutex> lockGuard(this->m_Mutex);
   for (unsigned int i = 0; i < nbOfComponents; ++i)
   {
     this->m_Minimum[i] = std::min(this->m_Minimum[i], min[i]);
@@ -91,7 +89,7 @@ MaskedImageToHistogramFilter<TImage, TMaskImage>::ThreadedStreamedGenerateData(c
   inputIt.GoToBegin();
   maskIt.GoToBegin();
   HistogramMeasurementVectorType m(nbOfComponents);
-  MaskPixelType                  maskValue = this->GetMaskValue();
+  const MaskPixelType            maskValue = this->GetMaskValue();
 
   typename HistogramType::IndexType index;
   while (!inputIt.IsAtEnd())
@@ -111,7 +109,6 @@ MaskedImageToHistogramFilter<TImage, TMaskImage>::ThreadedStreamedGenerateData(c
   this->ThreadedMergeHistogram(std::move(histogram));
 }
 
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #endif

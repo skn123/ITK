@@ -24,9 +24,7 @@
 #include <vnl/vnl_matrix.h>
 #include <vnl/algo/vnl_matrix_inverse.h>
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Element3DC0LinearTetrahedron
@@ -69,8 +67,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Element3DC0LinearTetrahedron, TemplatedParentClass);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Element3DC0LinearTetrahedron);
 
   // ////////////////////////////////////////////////////////////////////////
   /**
@@ -114,7 +112,6 @@ protected:
   void
   PopulateEdgeIds() override;
 };
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMElement3DC0LinearTetrahedron_h

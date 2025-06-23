@@ -1,6 +1,7 @@
 itk_wrap_module(ITKIOMeshBase)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkMeshIOBase
   itkMeshIOFactory
 )

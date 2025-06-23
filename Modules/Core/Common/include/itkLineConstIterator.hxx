@@ -25,13 +25,10 @@ template <typename TImage>
 LineConstIterator<TImage>::LineConstIterator(const ImageType * imagePtr,
                                              const IndexType & firstIndex,
                                              const IndexType & lastIndex)
+  : m_Image(imagePtr)
+  , m_StartIndex(firstIndex)
+  , m_LastIndex(lastIndex)
 {
-
-  m_Image = imagePtr;
-
-  m_StartIndex = firstIndex;
-  m_LastIndex = lastIndex;
-
   IndexType difference;
   for (unsigned int i = 0; i < TImage::ImageDimension; ++i)
   {
@@ -42,7 +39,7 @@ LineConstIterator<TImage>::LineConstIterator(const ImageType * imagePtr,
   unsigned int   maxDistanceDimension = 0;
   for (unsigned int i = 0; i < TImage::ImageDimension; ++i)
   {
-    IndexValueType distance = itk::Math::abs(difference[i]);
+    const IndexValueType distance = itk::Math::abs(difference[i]);
     if (distance > maxDistance)
     {
       maxDistance = distance;
@@ -146,7 +143,7 @@ LineConstIterator<TImage>::operator++()
     // The new index is outside the acceptable region.  We can iterate no
     // farther, call this the end.  NOTE THAT INPUT IS STILL INCREMENTED.
     m_IsAtEnd = true;
-    itkWarningMacro(<< "Line left region; unable to finish tracing it");
+    itkWarningMacro("Line left region; unable to finish tracing it");
   }
 }
 } // end namespace itk

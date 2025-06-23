@@ -82,18 +82,19 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(FRPROptimizer, PowellOptimizer);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FRPROptimizer);
 
   /** Type of the Cost Function   */
   using CostFunctionType = SingleValuedCostFunction;
   using CostFunctionPointer = CostFunctionType::Pointer;
 
   /** Convert gradient to a unit length vector */
+  /** @ITKStartGrouping */
   itkSetMacro(UseUnitLengthGradient, bool);
   itkGetConstMacro(UseUnitLengthGradient, bool);
   itkBooleanMacro(UseUnitLengthGradient);
-
+  /** @ITKEndGrouping */
   /** Start optimization. */
   void
   StartOptimization() override;

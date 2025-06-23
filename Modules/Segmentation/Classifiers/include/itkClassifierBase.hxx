@@ -24,9 +24,8 @@ namespace itk
 {
 template <typename TDataContainer>
 ClassifierBase<TDataContainer>::ClassifierBase()
+  : m_DecisionRule(nullptr)
 {
-  m_NumberOfClasses = 0;
-  m_DecisionRule = nullptr;
   m_MembershipFunctions.resize(0);
 }
 
@@ -43,7 +42,7 @@ ClassifierBase<TDataContainer>::PrintSelf(std::ostream & os, Indent indent) cons
   os << indent << "MembershipFunctions: " << std::endl;
   for (unsigned int i = 0; i < m_MembershipFunctions.size(); ++i)
   {
-    os << indent << m_MembershipFunctions[i] << std::endl;
+    os << indent.GetNextIndent() << m_MembershipFunctions[i] << std::endl;
   }
 }
 

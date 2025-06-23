@@ -54,8 +54,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
-  itkTypeMacro(BinaryMinMaxCurvatureFlowFunction, MinMaxCurvatureFlowFunction);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(BinaryMinMaxCurvatureFlowFunction);
 
   /** Inherit some parameters from the superclass type. */
   using typename Superclass::PixelType;
@@ -68,17 +68,18 @@ public:
   static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
   /** Set/Get the threshold value. */
+  /** @ITKStartGrouping */
   void
   SetThreshold(const double thresh)
   {
     m_Threshold = thresh;
   }
-  const double &
+  [[nodiscard]] const double &
   GetThreshold() const
   {
     return m_Threshold;
   }
-
+  /** @ITKEndGrouping */
   /** Compute the solution update for each pixel that does not lie on a the data set boundary. */
   PixelType
   ComputeUpdate(const NeighborhoodType & it,

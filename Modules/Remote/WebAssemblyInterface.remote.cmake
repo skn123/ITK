@@ -42,9 +42,10 @@
 #       Code style enforced by clang-format on 2020-02-19, and clang-tidy modernizations completed
 
 # Contact: Matt McCormick <matt.mccormick@kitware.com>
-itk_fetch_module(WebAssemblyInterface
-  "The itk-wasm WebAssemblyInterface module provides tools to a) build C/C++ code to WebAssembly-compatible processing pipelines, b) bridge local filesystems, JavaScript/Typescript data structures, and traditional file formats, c) transfer data efficiently in and out of the WebAssembly runtime."
+itk_fetch_module(
+  WebAssemblyInterface
+  "The ITK-Wasm WebAssemblyInterface module provides tools to a) build C/C++ code to WebAssembly-compatible processing pipelines, b) bridge local filesystems, JavaScript/Typescript data structures, and traditional file formats, c) transfer data efficiently in and out of the WebAssembly runtime."
   MODULE_COMPLIANCE_LEVEL 3
-  GIT_REPOSITORY ${git_protocol}://github.com/InsightSoftwareConsortium/itk-wasm.git
-  GIT_TAG d6452c1c8814f0fb237978b4c8d0cac8e8c93842
+  GIT_REPOSITORY https://github.com/InsightSoftwareConsortium/ITK-Wasm.git
+  GIT_TAG 982daf8ea91d5ecb052c3bf707542dbc43a4d1ef
   )

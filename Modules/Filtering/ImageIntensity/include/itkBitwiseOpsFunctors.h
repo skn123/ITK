@@ -20,9 +20,7 @@
 
 #include "itkMacro.h"
 
-namespace itk
-{
-namespace Functor
+namespace itk::Functor
 {
 
 /**
@@ -34,8 +32,6 @@ template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInpu
 class ITK_TEMPLATE_EXPORT AND
 {
 public:
-  AND() = default;
-  ~AND() = default;
   bool
   operator==(const AND &) const
   {
@@ -60,8 +56,6 @@ template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInpu
 class ITK_TEMPLATE_EXPORT OR
 {
 public:
-  OR() = default;
-  ~OR() = default;
   bool
   operator==(const OR &) const
   {
@@ -86,8 +80,6 @@ template <typename TInput1, typename TInput2 = TInput1, typename TOutput = TInpu
 class ITK_TEMPLATE_EXPORT XOR
 {
 public:
-  XOR() = default;
-  ~XOR() = default;
   bool
   operator==(const XOR &) const
   {
@@ -129,7 +121,6 @@ public:
     return static_cast<TOutput>(~A);
   }
 };
-} // namespace Functor
-} // namespace itk
+} // namespace itk::Functor
 
 #endif

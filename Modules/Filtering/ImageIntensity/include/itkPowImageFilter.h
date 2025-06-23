@@ -84,13 +84,13 @@ public:
    SetConstant2( constant );
    \endcode
  *
- * \ingroup IntensityImageFilters  MultiThreaded
+ * \ingroup IntensityImageFilters
+ * \ingroup MultiThreaded
  * \ingroup ITKImageIntensity
  *
  */
 template <typename TInputImage1, typename TInputImage2 = TInputImage1, typename TOutputImage = TInputImage1>
 class ITK_TEMPLATE_EXPORT PowImageFilter : public BinaryGeneratorImageFilter<TInputImage1, TInputImage2, TOutputImage>
-
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(PowImageFilter);
@@ -107,13 +107,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
-  itkTypeMacro(PowImageFilter, BinaryGeneratorImageFilter);
-
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
-  // End concept checking
-#endif
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PowImageFilter);
 
 protected:
   PowImageFilter()

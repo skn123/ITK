@@ -46,7 +46,7 @@ namespace itk
  *  \f$ U \f$ and lower threshold \f$ L \f$ according to the following formula.
  *
  * \par
- *  \f$  f(x) = \left\{ \begin{array}{ll} g(x) - L & \mbox{if $(g)x < (U-L)/2 + L$} \\ U - g(x) & \mbox{otherwise}
+ *  \f$  f(x) = \left\{ \begin{array}{ll} g(x) - L & \mbox{if g(x) < (U-L)/2 + L} \\ U - g(x) & \mbox{otherwise}
  * \end{array} \right. \f$
  *
  * \sa SegmentationLevelSetImageFunction
@@ -70,8 +70,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
-  itkTypeMacro(ThresholdSegmentationLevelSetFunction, SegmentationLevelSetFunction);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(ThresholdSegmentationLevelSetFunction);
 
   /** Extract some parameters from the superclass. */
   using typename Superclass::ImageType;
@@ -83,6 +83,7 @@ public:
   static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
   /** Set/Get threshold values */
+  /** @ITKStartGrouping */
   void
   SetUpperThreshold(FeatureScalarType f)
   {
@@ -103,7 +104,7 @@ public:
   {
     return m_LowerThreshold;
   }
-
+  /** @ITKEndGrouping */
   void
   CalculateSpeedImage() override;
 
@@ -112,7 +113,7 @@ public:
   {
     Superclass::Initialize(r);
 
-    this->SetAdvectionWeight(NumericTraits<ScalarValueType>::ZeroValue());
+    this->SetAdvectionWeight(ScalarValueType{});
     this->SetPropagationWeight(-1.0 * NumericTraits<ScalarValueType>::OneValue());
     this->SetCurvatureWeight(NumericTraits<ScalarValueType>::OneValue());
   }
@@ -155,7 +156,7 @@ public:
     m_SmoothingIterations = p;
   }
 
-  int
+  [[nodiscard]] int
   GetSmoothingIterations() const
   {
     return m_SmoothingIterations;
@@ -178,9 +179,9 @@ public:
 
 protected:
   ThresholdSegmentationLevelSetFunction()
+    : m_UpperThreshold(NumericTraits<FeatureScalarType>::max())
+    , m_LowerThreshold(NumericTraits<FeatureScalarType>::NonpositiveMin())
   {
-    m_UpperThreshold = NumericTraits<FeatureScalarType>::max();
-    m_LowerThreshold = NumericTraits<FeatureScalarType>::NonpositiveMin();
     this->SetAdvectionWeight(0.0);
     this->SetPropagationWeight(1.0);
     this->SetCurvatureWeight(1.0);

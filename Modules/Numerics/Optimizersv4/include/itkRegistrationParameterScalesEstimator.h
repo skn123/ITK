@@ -54,7 +54,7 @@ public:
 using SamplingStrategyEnum = RegistrationParameterScalesEstimatorEnums::SamplingStrategy;
 // Define how to print enumeration
 extern ITKOptimizersv4_EXPORT std::ostream &
-                              operator<<(std::ostream & out, const RegistrationParameterScalesEstimatorEnums::SamplingStrategy value);
+operator<<(std::ostream & out, const RegistrationParameterScalesEstimatorEnums::SamplingStrategy value);
 
 /**
  * \class RegistrationParameterScalesEstimator
@@ -89,13 +89,15 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(RegistrationParameterScalesEstimator, OptimizerParameterScalesEstimatorTemplate);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(RegistrationParameterScalesEstimator);
 
   /** Type of scales */
   using typename Superclass::ScalesType;
+
   /** Type of parameters of the optimizer */
   using typename Superclass::ParametersType;
+
   /** Type of float */
   using typename Superclass::FloatType;
 
@@ -149,23 +151,38 @@ public:
    *  The transforms from the metric will be used for estimation, along
    *  with the images when appropriate.
    */
+  /** @ITKStartGrouping */
   itkSetObjectMacro(Metric, MetricType);
-
+  itkGetConstObjectMacro(Metric, MetricType);
+  /** @ITKEndGrouping */
   /** m_TransformForward specifies which transform scales to be estimated.
    * m_TransformForward = true (default) for the moving transform parameters.
    * m_TransformForward = false for the fixed transform parameters.
    */
+  /** @ITKStartGrouping */
   itkSetMacro(TransformForward, bool);
   itkGetConstMacro(TransformForward, bool);
-
+  itkBooleanMacro(TransformForward);
+  /** @ITKEndGrouping */
   /** Get/Set a point set for virtual domain sampling. */
-  itkSetObjectMacro(VirtualDomainPointSet, VirtualPointSetType);
+  /** @ITKStartGrouping */
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  virtual void
+  SetVirtualDomainPointSet(VirtualPointSetType * const arg)
+  {
+    const auto * const constArg = arg;
+    // Call the overload defined by itkSetConstObjectMacro, or an override.
+    this->SetVirtualDomainPointSet(constArg);
+  }
+#endif
   itkSetConstObjectMacro(VirtualDomainPointSet, VirtualPointSetType);
   itkGetConstObjectMacro(VirtualDomainPointSet, VirtualPointSetType);
-
+  /** @ITKEndGrouping */
   /** the radius of the central region for sampling. */
+  /** @ITKStartGrouping */
   itkSetMacro(CentralRegionRadius, IndexValueType);
-
+  itkGetConstMacro(CentralRegionRadius, IndexValueType);
+  /** @ITKEndGrouping */
   /** Estimate parameter scales */
   void
   EstimateScales(ScalesType & scales) override = 0;

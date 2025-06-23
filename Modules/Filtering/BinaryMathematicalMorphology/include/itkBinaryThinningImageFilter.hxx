@@ -33,7 +33,7 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::BinaryThinningImageFilter(
 {
   this->SetNumberOfRequiredOutputs(1);
 
-  OutputImagePointer thinImage = OutputImageType::New();
+  const OutputImagePointer thinImage = OutputImageType::New();
   this->SetNthOutput(0, thinImage.GetPointer());
 }
 
@@ -56,20 +56,20 @@ template <typename TInputImage, typename TOutputImage>
 void
 BinaryThinningImageFilter<TInputImage, TOutputImage>::PrepareData()
 {
-  itkDebugMacro(<< "PrepareData Start");
-  OutputImagePointer thinImage = GetThinning();
+  itkDebugMacro("PrepareData Start");
+  const OutputImagePointer thinImage = GetThinning();
 
-  InputImagePointer inputImage = dynamic_cast<const TInputImage *>(ProcessObject::GetInput(0));
+  const InputImagePointer inputImage = dynamic_cast<const TInputImage *>(ProcessObject::GetInput(0));
 
   thinImage->SetBufferedRegion(thinImage->GetRequestedRegion());
   thinImage->Allocate();
 
-  typename OutputImageType::RegionType region = thinImage->GetRequestedRegion();
+  const typename OutputImageType::RegionType region = thinImage->GetRequestedRegion();
 
   ImageRegionConstIterator<TInputImage> it(inputImage, region);
   ImageRegionIterator<TOutputImage>     ot(thinImage, region);
 
-  itkDebugMacro(<< "PrepareData: Copy input to output");
+  itkDebugMacro("PrepareData: Copy input to output");
 
   // Copy the input to the output, changing all foreground pixels to
   // have value 1 in the process.
@@ -81,12 +81,12 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::PrepareData()
     }
     else
     {
-      ot.Set(NumericTraits<OutputImagePixelType>::ZeroValue());
+      ot.Set(OutputImagePixelType{});
     }
     ++it;
     ++ot;
   }
-  itkDebugMacro(<< "PrepareData End");
+  itkDebugMacro("PrepareData End");
 }
 
 /**
@@ -96,41 +96,25 @@ template <typename TInputImage, typename TOutputImage>
 void
 BinaryThinningImageFilter<TInputImage, TOutputImage>::ComputeThinImage()
 {
-  itkDebugMacro(<< "ComputeThinImage Start");
-  OutputImagePointer thinImage = GetThinning();
+  itkDebugMacro("ComputeThinImage Start");
+  const OutputImagePointer thinImage = GetThinning();
 
-  typename OutputImageType::RegionType region = thinImage->GetRequestedRegion();
+  const typename OutputImageType::RegionType region = thinImage->GetRequestedRegion();
 
-  typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  auto                     radius = MakeFilled<typename NeighborhoodIteratorType::RadiusType>(1);
   NeighborhoodIteratorType ot(radius, thinImage, region);
 
   // Create a set of offsets from the center.
   // This numbering follows that of Gonzalez and Woods.
   using OffsetType = typename NeighborhoodIteratorType::OffsetType;
-  OffsetType o2 = { { 0, -1 } };
-  OffsetType o3 = { { 1, -1 } };
-  OffsetType o4 = { { 1, 0 } };
-  OffsetType o5 = { { 1, 1 } };
-  OffsetType o6 = { { 0, 1 } };
-  OffsetType o7 = { { -1, 1 } };
-  OffsetType o8 = { { -1, 0 } };
-  OffsetType o9 = { { -1, -1 } };
-
-  PixelType p2;
-  PixelType p3;
-  PixelType p4;
-  PixelType p5;
-  PixelType p6;
-  PixelType p7;
-  PixelType p8;
-  PixelType p9;
-
-  // These tests correspond to the conditions listed in Gonzalez and Woods
-  bool testA;
-  bool testB;
-  bool testC;
-  bool testD;
+  const OffsetType o2 = { { 0, -1 } };
+  const OffsetType o3 = { { 1, -1 } };
+  const OffsetType o4 = { { 1, 0 } };
+  const OffsetType o5 = { { 1, 1 } };
+  const OffsetType o6 = { { 0, 1 } };
+  const OffsetType o7 = { { -1, 1 } };
+  const OffsetType o8 = { { -1, 0 } };
+  const OffsetType o9 = { { -1, -1 } };
 
   std::vector<IndexType>                    pixelsToDelete;
   typename std::vector<IndexType>::iterator pixelsToDeleteIt;
@@ -148,19 +132,20 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::ComputeThinImage()
       for (ot.GoToBegin(); !ot.IsAtEnd(); ++ot)
       {
         // Each iteration over the image, set all tests to false.
-        testA = false;
-        testB = false;
-        testC = false;
-        testD = false;
+        // These tests correspond to the conditions listed in Gonzalez and Woods
+        bool testA = false;
+        bool testB = false;
+        bool testC = false;
+        bool testD = false;
 
-        p2 = ot.GetPixel(o2);
-        p3 = ot.GetPixel(o3);
-        p4 = ot.GetPixel(o4);
-        p5 = ot.GetPixel(o5);
-        p6 = ot.GetPixel(o6);
-        p7 = ot.GetPixel(o7);
-        p8 = ot.GetPixel(o8);
-        p9 = ot.GetPixel(o9);
+        const PixelType p2 = ot.GetPixel(o2);
+        const PixelType p3 = ot.GetPixel(o3);
+        const PixelType p4 = ot.GetPixel(o4);
+        const PixelType p5 = ot.GetPixel(o5);
+        const PixelType p6 = ot.GetPixel(o6);
+        const PixelType p7 = ot.GetPixel(o7);
+        const PixelType p8 = ot.GetPixel(o8);
+        const PixelType p9 = ot.GetPixel(o9);
 
         // Determine whether the pixel should be deleted in the
         // following if statements.
@@ -173,7 +158,7 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::ComputeThinImage()
           // neighbor implies that p1 is the end point of a skeleton
           // stroke and obviously should not be deleted.  Deleting p1
           // if it has seven such neighbors would cause erosion into a region.
-          PixelType numberOfOnNeighbors = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
+          const PixelType numberOfOnNeighbors = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
 
           if (numberOfOnNeighbors > 1 && numberOfOnNeighbors < 7)
           {
@@ -273,9 +258,9 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::ComputeThinImage()
         thinImage->SetPixel(*pixelsToDeleteIt, 0);
       }
     } // end step loop
-  }   // end noChange while loop
+  } // end noChange while loop
 
-  itkDebugMacro(<< "ComputeThinImage End");
+  itkDebugMacro("ComputeThinImage End");
 }
 
 /**
@@ -287,7 +272,7 @@ BinaryThinningImageFilter<TInputImage, TOutputImage>::GenerateData()
 {
   this->PrepareData();
 
-  itkDebugMacro(<< "GenerateData: Computing Thinning Image");
+  itkDebugMacro("GenerateData: Computing Thinning Image");
   this->ComputeThinImage();
 } // end GenerateData()
 } // end namespace itk

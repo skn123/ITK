@@ -78,8 +78,20 @@ public:
 
   /** Default-constructor.
    * \note The other five "special member functions" are defaulted implicitly, following the C++ "Rule of Zero". */
-  RGBAPixel() { this->Fill(0); }
+#ifdef ITK_FUTURE_LEGACY_REMOVE
+  RGBAPixel() = default;
+#else
+  constexpr RGBAPixel()
+    : Superclass(Superclass())
+  {
+    // `: Superclass(Superclass())` is a workaround for an old compiler bug. A simple `: Superclass()` triggered
+    // warnings from GCC 9.4.0 saying: "warning: '<anonymous>' may be used uninitialized in this function
+    // [-Wmaybe-uninitialized]".
+  }
+#endif
+
   /** Pass-through constructor for the Array base class. */
+  /** @ITKStartGrouping */
   template <typename TRGBAPixelValueType>
   RGBAPixel(const RGBAPixel<TRGBAPixelValueType> & r)
     : BaseArray(r)
@@ -87,6 +99,7 @@ public:
   RGBAPixel(const ComponentType r[4])
     : BaseArray(r)
   {}
+  /** @ITKEndGrouping */
 
 #if defined(ITK_LEGACY_REMOVE)
   /** Prevents copy-initialization from `nullptr`, as well as from `0` (NULL). */
@@ -103,15 +116,19 @@ public:
   operator=(const ComponentType r[4]);
 
   /** Arithmetic operations between pixels. Return a new RGBAPixel. */
+  /** @ITKStartGrouping */
   Self
   operator+(const Self & r) const;
   Self
-       operator-(const Self & r) const;
-  Self operator*(const ComponentType & r) const;
+  operator-(const Self & r) const;
+  Self
+  operator*(const ComponentType & r) const;
   Self
   operator/(const ComponentType & r) const;
+  /** @ITKEndGrouping */
 
   /** Arithmetic-assignment operators. */
+  /** @ITKStartGrouping */
   const Self &
   operator+=(const Self & r);
   const Self &
@@ -120,6 +137,7 @@ public:
   operator*=(const ComponentType & r);
   const Self &
   operator/=(const ComponentType & r);
+  /** @ITKEndGrouping */
 
   /** Implements strict weak ordering. For use in STL, e.g. std::map. */
   bool
@@ -136,14 +154,14 @@ public:
   }
 
   /** Return the value for the Nth component. */
-  ComponentType
+  [[nodiscard]] ComponentType
   GetNthComponent(int c) const
   {
     return this->operator[](c);
   }
 
   /** Return the Euclidean norm of the vector defined by the RGB components. Alpha is not used. */
-  ComponentType
+  [[nodiscard]] ComponentType
   GetScalarValue() const
   {
     return static_cast<ComponentType>(
@@ -198,35 +216,35 @@ public:
   }
 
   /** Get the Red component. */
-  const ComponentType &
+  [[nodiscard]] const ComponentType &
   GetRed() const
   {
     return this->operator[](0);
   }
 
   /** Get the Green component. */
-  const ComponentType &
+  [[nodiscard]] const ComponentType &
   GetGreen() const
   {
     return this->operator[](1);
   }
 
   /** Get the Blue component. */
-  const ComponentType &
+  [[nodiscard]] const ComponentType &
   GetBlue() const
   {
     return this->operator[](2);
   }
 
   /** Get the Alpha component. */
-  const ComponentType &
+  [[nodiscard]] const ComponentType &
   GetAlpha() const
   {
     return this->operator[](3);
   }
 
   /** Get Luminance out of RGB */
-  LuminanceType
+  [[nodiscard]] LuminanceType
   GetLuminance() const;
 };
 
@@ -240,7 +258,7 @@ operator>>(std::istream & is, RGBAPixel<TComponent> & c);
 
 template <typename T>
 inline void
-swap(RGBAPixel<T> & a, RGBAPixel<T> & b)
+swap(RGBAPixel<T> & a, RGBAPixel<T> & b) noexcept
 {
   a.swap(b);
 }

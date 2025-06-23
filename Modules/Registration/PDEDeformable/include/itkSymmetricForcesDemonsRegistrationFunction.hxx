@@ -27,30 +27,22 @@ namespace itk
 template <typename TFixedImage, typename TMovingImage, typename TDisplacementField>
 SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::
   SymmetricForcesDemonsRegistrationFunction()
+  : m_FixedImageGradientCalculator(GradientCalculatorType::New())
+  , m_TimeStep(1.0)
+  , m_DenominatorThreshold(1e-9)
+  , m_IntensityDifferenceThreshold(0.001)
+  , m_Metric(NumericTraits<double>::max())
+  , m_RMSChange(NumericTraits<double>::max())
+
 {
-  RadiusType r;
-
-  r.Fill(0);
+  constexpr RadiusType r{};
   this->SetRadius(r);
-
-  m_TimeStep = 1.0;
-  m_DenominatorThreshold = 1e-9;
-  m_IntensityDifferenceThreshold = 0.001;
   this->SetMovingImage(nullptr);
   this->SetFixedImage(nullptr);
   m_FixedImageSpacing.Fill(1.0);
-  m_Normalizer = 0.0;
-  m_FixedImageGradientCalculator = GradientCalculatorType::New();
 
   auto interp = DefaultInterpolatorType::New();
-
   m_MovingImageInterpolator = static_cast<InterpolatorType *>(interp.GetPointer());
-
-  m_Metric = NumericTraits<double>::max();
-  m_SumOfSquaredDifference = 0.0;
-  m_NumberOfPixelsProcessed = 0L;
-  m_RMSChange = NumericTraits<double>::max();
-  m_SumOfSquaredChange = 0.0;
 }
 
 template <typename TFixedImage, typename TMovingImage, typename TDisplacementField>
@@ -106,7 +98,7 @@ SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplaceme
 {
   if (!this->GetMovingImage() || !this->GetFixedImage() || !m_MovingImageInterpolator)
   {
-    itkExceptionMacro(<< "MovingImage, FixedImage and/or Interpolator not set");
+    itkExceptionMacro("MovingImage, FixedImage and/or Interpolator not set");
   }
 
   // cache fixed image information
@@ -118,7 +110,7 @@ SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplaceme
   {
     m_Normalizer += m_FixedImageSpacing[k] * m_FixedImageSpacing[k];
   }
-  m_Normalizer /= static_cast<double>(ImageDimension);
+  m_Normalizer /= double{ ImageDimension };
 
   // setup gradient calculator
   m_FixedImageGradientCalculator->SetInputImage(this->GetFixedImage());
@@ -133,11 +125,11 @@ SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplaceme
 }
 
 template <typename TFixedImage, typename TMovingImage, typename TDisplacementField>
-typename SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::PixelType
+auto
 SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::ComputeUpdate(
   const NeighborhoodType & it,
   void *                   gd,
-  const FloatOffsetType &  itkNotUsed(offset))
+  const FloatOffsetType &  itkNotUsed(offset)) -> PixelType
 {
   auto *          globalData = (GlobalDataStruct *)gd;
   const IndexType FirstIndex = this->GetFixedImage()->GetLargestPossibleRegion().GetIndex();
@@ -286,9 +278,9 @@ void
 SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::ReleaseGlobalDataPointer(
   void * gd) const
 {
-  auto * globalData = (GlobalDataStruct *)gd;
+  const std::unique_ptr<const GlobalDataStruct> globalData(static_cast<GlobalDataStruct *>(gd));
 
-  m_MetricCalculationLock.lock();
+  const std::lock_guard<std::mutex> lockGuard(m_MetricCalculationMutex);
   m_SumOfSquaredDifference += globalData->m_SumOfSquaredDifference;
   m_NumberOfPixelsProcessed += globalData->m_NumberOfPixelsProcessed;
   m_SumOfSquaredChange += globalData->m_SumOfSquaredChange;
@@ -297,9 +289,6 @@ SymmetricForcesDemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplaceme
     m_Metric = m_SumOfSquaredDifference / static_cast<double>(m_NumberOfPixelsProcessed);
     m_RMSChange = std::sqrt(m_SumOfSquaredChange / static_cast<double>(m_NumberOfPixelsProcessed));
   }
-  m_MetricCalculationLock.unlock();
-
-  delete globalData;
 }
 } // end namespace itk
 #endif

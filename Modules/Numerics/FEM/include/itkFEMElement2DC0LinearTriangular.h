@@ -22,9 +22,7 @@
 #include "itkFEMElementStd.h"
 #include "ITKFEMExport.h"
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Element2DC0LinearTriangular
@@ -65,8 +63,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Element2DC0LinearTriangular, TemplatedParentClass);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Element2DC0LinearTriangular);
 
   // ////////////////////////////////////////////////////////////////////////
   /**
@@ -130,7 +128,6 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 };
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMElement2DC0LinearTriangular_h

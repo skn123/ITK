@@ -35,7 +35,6 @@
 # only used by the macros defined in a given cmake file.
 ###############################################################################
 
-
 ###############################################################################
 # Find Required Packages
 ###############################################################################
@@ -84,7 +83,6 @@ else()
   set(WRAP_ITK_LIBNAME_PREFIX "")
 endif()
 
-
 ###############################################################################
 # Define install files macro. If we are building WrapITK, the generated files
 # and libraries will be installed into CMAKE_INSTALL_PREFIX, as usual. However,
@@ -99,24 +97,32 @@ macro(WRAP_ITK_INSTALL path)
   if(WRAP_ITK_INSTALL_COMPONENT_PER_MODULE)
     set(_component_module "ITKCommon")
   endif()
-  install(FILES ${ARGN}
+  install(
+    FILES
+      ${ARGN}
     DESTINATION "${WRAP_ITK_INSTALL_PREFIX}${path}"
-    COMPONENT ${_component_module}${WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}RuntimeLibraries
-    )
+    COMPONENT
+      ${_component_module}${WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}RuntimeLibraries
+  )
 endmacro()
-
 
 ###############################################################################
 # Macro to install the language bindings
 ###############################################################################
 macro(WRAP_ITK_BINDINGS_INSTALL path)
   if(WRAP_ITK_INSTALL_COMPONENT_PER_MODULE)
-    message(WARNING "Option WRAP_ITK_INSTALL_COMPONENT_PER_MODULE is only supported for Python wrapping language")
-  endif()
-  install(FILES ${ARGN}
-    DESTINATION "${ITK_INSTALL_LIBRARY_DIR}/ITK-${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}${path}"
-    COMPONENT ${WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}RuntimeLibraries
+    message(
+      WARNING
+      "Option WRAP_ITK_INSTALL_COMPONENT_PER_MODULE is only supported for Python wrapping language"
     )
+  endif()
+  install(
+    FILES
+      ${ARGN}
+    DESTINATION
+      "${ITK_INSTALL_LIBRARY_DIR}/ITK-${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}${path}"
+    COMPONENT ${WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}RuntimeLibraries
+  )
 endmacro()
 
 ###############################################################################
@@ -133,7 +139,14 @@ include("${WRAP_ITK_CMAKE_DIR}/WrapITKTypes.cmake")
 ###############################################################################
 # Lets the target generators do their job
 ###############################################################################
-add_subdirectory("${WRAP_ITK_CMAKE_DIR}/Generators" "${CMAKE_CURRENT_BINARY_DIR}/Generators")
+add_subdirectory(
+  "${WRAP_ITK_CMAKE_DIR}/Generators"
+  "${CMAKE_CURRENT_BINARY_DIR}/Generators"
+)
 # get the properties from the generators dirs - there should be others than this one
-get_directory_property(inc DIRECTORY "${WRAP_ITK_CMAKE_DIR}/Generators" INCLUDE_DIRECTORIES)
+get_directory_property(
+  inc
+  DIRECTORY "${WRAP_ITK_CMAKE_DIR}/Generators"
+  INCLUDE_DIRECTORIES
+)
 include_directories(${inc})

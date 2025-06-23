@@ -1,6 +1,7 @@
 itk_wrap_module(ITKFastMarching)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkLevelSetNode
   itkNodePair
   itkFastMarchingStoppingCriterionBase

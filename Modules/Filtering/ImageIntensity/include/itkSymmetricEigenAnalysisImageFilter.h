@@ -44,8 +44,6 @@ class SymmetricEigenAnalysisFunction
 {
 public:
   using RealValueType = typename TInput::RealValueType;
-  SymmetricEigenAnalysisFunction() = default;
-  ~SymmetricEigenAnalysisFunction() = default;
   using CalculatorType = SymmetricEigenAnalysis<TInput, TOutput>;
   bool
   operator==(const SymmetricEigenAnalysisFunction &) const
@@ -58,23 +56,25 @@ public:
   inline TOutput
   operator()(const TInput & x) const
   {
-    TOutput eigenValues;
+    TOutput eigenValues{};
 
     m_Calculator.ComputeEigenValues(x, eigenValues);
     return eigenValues;
   }
 
   /** Method to explicitly set the dimension of the matrix */
+  /** @ITKStartGrouping */
   void
   SetDimension(unsigned int n)
   {
     m_Calculator.SetDimension(n);
   }
-  unsigned int
+  [[nodiscard]] unsigned int
   GetDimension() const
   {
     return m_Calculator.GetDimension();
   }
+  /** @ITKEndGrouping */
 
 #if !defined(ITK_LEGACY_REMOVE)
   /** Enables reverse compatibility for enumeration values */
@@ -90,6 +90,7 @@ public:
 
   /** Order eigen values. Default is to OrderByValue:  lambda_1 <
    * lambda_2 < .... */
+  /** @ITKStartGrouping */
   void
   OrderEigenValuesBy(EigenValueOrderEnum order)
   {
@@ -107,7 +108,7 @@ public:
   {
     this->OrderEigenValuesBy(order);
   }
-  EigenValueOrderEnum
+  [[nodiscard]] EigenValueOrderEnum
   GetOrderEigenValuesBy() const
   {
     if (m_Calculator.GetOrderEigenMagnitudes())
@@ -120,7 +121,7 @@ public:
     }
     return EigenValueOrderEnum::DoNotOrder;
   }
-
+  /** @ITKEndGrouping */
 
 private:
   CalculatorType m_Calculator;
@@ -131,8 +132,6 @@ class SymmetricEigenAnalysisFixedDimensionFunction
 {
 public:
   using RealValueType = typename TInput::RealValueType;
-  SymmetricEigenAnalysisFixedDimensionFunction() = default;
-  ~SymmetricEigenAnalysisFixedDimensionFunction() = default;
   using CalculatorType = SymmetricEigenAnalysisFixedDimension<TMatrixDimension, TInput, TOutput>;
   bool
   operator==(const SymmetricEigenAnalysisFixedDimensionFunction &) const
@@ -152,7 +151,7 @@ public:
   }
 
   /** Method to get the dimension of the matrix. Dimension is fixed, no SetDimension is provided */
-  unsigned int
+  [[nodiscard]] unsigned int
   GetDimension() const
   {
     return m_Calculator.GetDimension();
@@ -213,7 +212,7 @@ extern ITKImageIntensity_EXPORT std::ostream &
  *
  * \ingroup ITKImageIntensity
  */
-template <typename TInputImage, typename TOutputImage = TInputImage>
+template <typename TInputImage, typename TOutputImage>
 class SymmetricEigenAnalysisImageFilter
   : public UnaryFunctorImageFilter<
       TInputImage,
@@ -246,6 +245,7 @@ public:
 
   /** Order eigen values. Default is to OrderByValue:  lambda_1 <
    * lambda_2 < .... */
+  /** @ITKStartGrouping */
   void
   OrderEigenValuesBy(EigenValueOrderEnum order)
   {
@@ -256,14 +256,15 @@ public:
   {
     this->OrderEigenValuesBy(order);
   }
-  EigenValueOrderEnum
+  [[nodiscard]] EigenValueOrderEnum
   GetOrderEigenValuesBy() const
   {
     return this->GetFunctor().GetOrderEigenValuesBy();
   }
+  /** @ITKEndGrouping */
 
-  /** Run-time type information (and related methods).   */
-  itkTypeMacro(SymmetricEigenAnalysisImageFilter, UnaryFunctorImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(SymmetricEigenAnalysisImageFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -275,24 +276,22 @@ public:
     this->Superclass::PrintSelf(os, indent);
   }
 
-  /** Set the dimension of the tensor. (For example the SymmetricSecondRankTensor
+  /** Set/Get the dimension of the tensor. (For example the SymmetricSecondRankTensor
    * is a pxp matrix) */
+  /** @ITKStartGrouping */
   void
   SetDimension(unsigned int p)
   {
     this->GetFunctor().SetDimension(p);
   }
-  unsigned int
+  [[nodiscard]] unsigned int
   GetDimension() const
   {
     return this->GetFunctor().GetDimension();
   }
+  /** @ITKEndGrouping */
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputValueType>));
-  // End concept checking
-#endif
 
 protected:
   SymmetricEigenAnalysisImageFilter() { this->SetDimension(TInputImage::ImageDimension); }
@@ -358,8 +357,8 @@ public:
     this->GetFunctor().OrderEigenValuesBy(order);
   }
 
-  /** Run-time type information (and related methods).   */
-  itkTypeMacro(SymmetricEigenAnalysisFixedDimensionImageFilter, UnaryFunctorImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(SymmetricEigenAnalysisFixedDimensionImageFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -372,17 +371,13 @@ public:
   }
 
   /** GetDimension of the matrix. Dimension is fixed by template parameter, no SetDimension. */
-  unsigned int
+  [[nodiscard]] unsigned int
   GetDimension() const
   {
     return this->GetFunctor().GetDimension();
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputValueType>));
-  // End concept checking
-#endif
 
 protected:
   SymmetricEigenAnalysisFixedDimensionImageFilter() = default;

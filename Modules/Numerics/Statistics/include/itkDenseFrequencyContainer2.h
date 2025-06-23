@@ -23,9 +23,7 @@
 #include "itkMeasurementVectorTraits.h"
 #include "ITKStatisticsExport.h"
 
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 /**
  * \class DenseFrequencyContainer2
@@ -51,8 +49,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(DenseFrequencyContainer2, Object);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(DenseFrequencyContainer2);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -121,7 +119,6 @@ private:
   FrequencyContainerPointer  m_FrequencyContainer{};
   TotalAbsoluteFrequencyType m_TotalFrequency{};
 }; // end of class
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #endif

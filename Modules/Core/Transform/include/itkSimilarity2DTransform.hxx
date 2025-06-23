@@ -26,32 +26,29 @@ namespace itk
 template <typename TParametersValueType>
 Similarity2DTransform<TParametersValueType>::Similarity2DTransform()
   : Superclass(ParametersDimension)
-{
-  m_Scale = 1.0f;
-}
+  , m_Scale(1.0f)
+{}
 
 
 template <typename TParametersValueType>
 Similarity2DTransform<TParametersValueType>::Similarity2DTransform(unsigned int parametersDimension)
   : Superclass(parametersDimension)
-{
-  m_Scale = 1.0f;
-}
+  , m_Scale(1.0f)
+{}
 
 
 template <typename TParametersValueType>
 Similarity2DTransform<TParametersValueType>::Similarity2DTransform(unsigned int, unsigned int parametersDimension)
   : Superclass(parametersDimension)
-{
-  m_Scale = 1.0f;
-}
+  , m_Scale(1.0f)
+{}
 
 
 template <typename TParametersValueType>
 void
 Similarity2DTransform<TParametersValueType>::SetParameters(const ParametersType & parameters)
 {
-  itkDebugMacro(<< "Setting parameters " << parameters);
+  itkDebugMacro("Setting parameters " << parameters);
 
   // Save parameters. Needed for proper operation of TransformUpdateParameters.
   if (&parameters != &(this->m_Parameters))
@@ -82,7 +79,7 @@ Similarity2DTransform<TParametersValueType>::SetParameters(const ParametersType 
   // parameters and cannot know if the parameters have changed.
   this->Modified();
 
-  itkDebugMacro(<< "After setting parameters ");
+  itkDebugMacro("After setting parameters ");
 }
 
 
@@ -90,7 +87,7 @@ template <typename TParametersValueType>
 auto
 Similarity2DTransform<TParametersValueType>::GetParameters() const -> const ParametersType &
 {
-  itkDebugMacro(<< "Getting parameters ");
+  itkDebugMacro("Getting parameters ");
 
   this->m_Parameters[0] = this->GetScale();
   this->m_Parameters[1] = this->GetAngle();
@@ -102,7 +99,7 @@ Similarity2DTransform<TParametersValueType>::GetParameters() const -> const Para
     this->m_Parameters[i + 2] = translation[i];
   }
 
-  itkDebugMacro(<< "After getting parameters " << this->m_Parameters);
+  itkDebugMacro("After getting parameters " << this->m_Parameters);
 
   return this->m_Parameters;
 }
@@ -152,8 +149,7 @@ Similarity2DTransform<TParametersValueType>::ComputeMatrixParameters()
   // https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon
   if (m_Scale < std::numeric_limits<TParametersValueType>::min())
   {
-    itkExceptionMacro(<< "Bad Rotation Matrix. Scale cannot be zero.\n"
-                      << "m_Scale : " << m_Scale);
+    itkExceptionMacro("Bad Rotation Matrix. Scale cannot be zero.\nm_Scale : " << m_Scale);
   }
 
   this->SetVarAngle(std::acos(this->GetMatrix()[0][0] / m_Scale));
@@ -165,7 +161,7 @@ Similarity2DTransform<TParametersValueType>::ComputeMatrixParameters()
 
   if ((this->GetMatrix()[1][0] / m_Scale) - std::sin(this->GetAngle()) > 0.000001)
   {
-    itkExceptionMacro(<< "Bad Rotation Matrix");
+    itkExceptionMacro("Bad Rotation Matrix");
   }
 }
 
@@ -242,7 +238,7 @@ Similarity2DTransform<TParametersValueType>::GetInverse(Self * inverse) const
   }
 
   inverse->SetFixedParameters(this->GetFixedParameters());
-  this->GetInverseMatrix();
+  const auto & inverseMatrix = this->GetInverseMatrix();
   if (this->GetSingular())
   {
     return false;
@@ -250,7 +246,7 @@ Similarity2DTransform<TParametersValueType>::GetInverse(Self * inverse) const
   inverse->SetCenter(this->GetCenter()); // inverse have the same center
   inverse->SetScale(1.0 / this->GetScale());
   inverse->SetAngle(-this->GetAngle());
-  inverse->SetTranslation(-(this->GetInverseMatrix() * this->GetTranslation()));
+  inverse->SetTranslation(-(inverseMatrix * this->GetTranslation()));
 
   return true;
 }
@@ -260,13 +256,7 @@ template <typename TParametersValueType>
 auto
 Similarity2DTransform<TParametersValueType>::GetInverseTransform() const -> InverseTransformBasePointer
 {
-  Pointer inv = New();
-
-  if (this->GetInverse(inv))
-  {
-    return inv.GetPointer();
-  }
-  return nullptr;
+  return Superclass::InvertTransform(*this);
 }
 
 

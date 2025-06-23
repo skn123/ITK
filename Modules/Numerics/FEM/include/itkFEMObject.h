@@ -35,9 +35,7 @@
 #include "itkVectorContainer.h"
 #include "ITKFEMExport.h"
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /** \class FEMObject
  * \brief Implements N-dimensional Finite element (FE) models including
@@ -86,8 +84,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Standard part of every itk Object. */
-  itkTypeMacro(FEMObject, DataObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(FEMObject);
 
   static constexpr unsigned int FEMDimension = VDimension;
   static constexpr unsigned int MaxDimensions = 3;
@@ -390,8 +388,8 @@ private:
   AddNextLoadInternal(Load * l);
 };
 
-} // namespace fem
-} // namespace itk
+} // namespace itk::fem
+
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #  include "itkFEMObject.hxx"

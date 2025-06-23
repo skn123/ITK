@@ -18,16 +18,10 @@
 #ifndef itkMembershipSample_hxx
 #define itkMembershipSample_hxx
 
-
-namespace itk
-{
-namespace Statistics
+namespace itk::Statistics
 {
 template <typename TSample>
-MembershipSample<TSample>::MembershipSample()
-{
-  this->m_NumberOfClasses = 0;
-}
+MembershipSample<TSample>::MembershipSample() = default;
 
 template <typename TSample>
 void
@@ -90,7 +84,7 @@ template <typename TSample>
 auto
 MembershipSample<TSample>::GetClassSample(const ClassLabelType & classLabel) const -> const ClassSampleType *
 {
-  int classIndex = this->GetInternalClassLabel(classLabel);
+  const int classIndex = this->GetInternalClassLabel(classLabel);
   if (classIndex < 0)
   {
     return nullptr;
@@ -107,22 +101,23 @@ MembershipSample<TSample>::GetMeasurementVector(const InstanceIdentifier & id) c
 }
 
 template <typename TSample>
-inline typename MembershipSample<TSample>::MeasurementType
+inline auto
 MembershipSample<TSample>::GetMeasurement(const InstanceIdentifier & id, const unsigned int dimension)
+  -> MeasurementType
 {
   return m_Sample->GetMeasurement(id, dimension);
 }
 
 template <typename TSample>
-inline typename MembershipSample<TSample>::AbsoluteFrequencyType
-MembershipSample<TSample>::GetFrequency(const InstanceIdentifier & id) const
+inline auto
+MembershipSample<TSample>::GetFrequency(const InstanceIdentifier & id) const -> AbsoluteFrequencyType
 {
   return m_Sample->GetFrequency(id);
 }
 
 template <typename TSample>
-inline typename MembershipSample<TSample>::TotalAbsoluteFrequencyType
-MembershipSample<TSample>::GetTotalFrequency() const
+inline auto
+MembershipSample<TSample>::GetTotalFrequency() const -> TotalAbsoluteFrequencyType
 {
   return m_Sample->GetTotalFrequency();
 }
@@ -156,7 +151,6 @@ MembershipSample<TSample>::PrintSelf(std::ostream & os, Indent indent) const
   os << indent << "Sample: " << m_Sample.GetPointer() << std::endl;
   os << indent << "NumberOfClasses: " << this->GetNumberOfClasses() << std::endl;
 }
-} // end of namespace Statistics
-} // end of namespace itk
+} // namespace itk::Statistics
 
 #endif

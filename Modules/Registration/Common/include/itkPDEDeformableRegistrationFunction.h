@@ -49,8 +49,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods) */
-  itkTypeMacro(PDEDeformableRegistrationFunction, FiniteDifferenceFunction);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PDEDeformableRegistrationFunction);
 
   /** MovingImage image type. */
   using MovingImageType = TMovingImage;
@@ -140,14 +140,12 @@ public:
 
 protected:
   PDEDeformableRegistrationFunction()
-  {
-    m_MovingImage = nullptr;
-    m_FixedImage = nullptr;
-    m_DisplacementField = nullptr;
-    m_Energy = 0.0;
-    m_NormalizeGradient = true;
-    m_GradientStep = 1.0;
-  }
+    : m_MovingImage(nullptr)
+    , m_FixedImage(nullptr)
+    , m_DisplacementField(nullptr)
+    , m_NormalizeGradient(true)
+    , m_GradientStep(1.0)
+  {}
 
   ~PDEDeformableRegistrationFunction() override = default;
 

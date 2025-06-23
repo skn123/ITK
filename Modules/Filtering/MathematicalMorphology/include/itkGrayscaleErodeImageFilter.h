@@ -65,8 +65,8 @@ public:
   /** Standard New method. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
-  itkTypeMacro(GrayscaleErodeImageFilter, KernelImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(GrayscaleErodeImageFilter);
 
   /** Image related type alias. */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
@@ -124,10 +124,11 @@ public:
   itkGetConstMacro(Boundary, PixelType);
 
   /** Set/Get the backend filter class. */
+  /** @ITKStartGrouping */
   void
   SetAlgorithm(AlgorithmEnum algo);
   itkGetConstMacro(Algorithm, AlgorithmEnum);
-
+  /** @ITKEndGrouping */
   /** GrayscaleErodeImageFilter need to set its internal filters as modified */
   void
   Modified() const override;

@@ -24,11 +24,8 @@ namespace itk
 {
 template <typename TImage>
 ShapeOpeningLabelMapFilter<TImage>::ShapeOpeningLabelMapFilter()
+  : m_Attribute(LabelObjectType::NUMBER_OF_PIXELS)
 {
-  m_Lambda = 0.0;
-  m_ReverseOrdering = false;
-  m_Attribute = LabelObjectType::NUMBER_OF_PIXELS;
-
   // create the output image for the removed objects
   this->SetNumberOfRequiredOutputs(2);
   this->SetNthOutput(1, static_cast<TImage *>(this->MakeOutput(1).GetPointer()));
@@ -40,7 +37,7 @@ ShapeOpeningLabelMapFilter<TImage>::GenerateData()
 {
   switch (m_Attribute)
   {
-    itkShapeLabelMapFilterDispatchMacro() default : itkExceptionMacro(<< "Unknown attribute type");
+    itkShapeLabelMapFilterDispatchMacro() default : itkExceptionMacro("Unknown attribute type");
     break;
   }
 }

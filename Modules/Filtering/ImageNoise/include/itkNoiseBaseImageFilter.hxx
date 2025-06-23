@@ -36,7 +36,7 @@ template <class TInputImage, class TOutputImage>
 void
 NoiseBaseImageFilter<TInputImage, TOutputImage>::SetSeed()
 {
-  time_t t;
+  time_t t = 0;
 
   time(&t);
   this->SetSeed(Hash(t, clock()));
@@ -50,11 +50,11 @@ NoiseBaseImageFilter<TInputImage, TOutputImage>::ClampCast(const double value) -
   {
     return NumericTraits<OutputImagePixelType>::max();
   }
-  else if (value <= static_cast<double>(NumericTraits<OutputImagePixelType>::NonpositiveMin()))
+  if (value <= static_cast<double>(NumericTraits<OutputImagePixelType>::NonpositiveMin()))
   {
     return NumericTraits<OutputImagePixelType>::NonpositiveMin();
   }
-  else if (NumericTraits<OutputImagePixelType>::is_integer)
+  else if constexpr (NumericTraits<OutputImagePixelType>::is_integer)
   {
     return Math::Round<OutputImagePixelType>(value);
   }

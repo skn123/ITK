@@ -49,8 +49,8 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   itkNewMacro(Self);
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(QuadEdgeMeshEulerOperatorSplitVertexFunction, QuadEdgeMeshFunctionBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(QuadEdgeMeshEulerOperatorSplitVertexFunction);
 
   /** Type of QuadEdge with which to apply slicing. */
   using QEType = TQEType;
@@ -72,7 +72,9 @@ public:
   }
 
 protected:
-  QuadEdgeMeshEulerOperatorSplitVertexFunction() { m_NewPoint = (PointIdentifier)0; }
+  QuadEdgeMeshEulerOperatorSplitVertexFunction()
+    : m_NewPoint((PointIdentifier)0)
+  {}
 
   ~QuadEdgeMeshEulerOperatorSplitVertexFunction() override = default;
 

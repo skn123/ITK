@@ -25,15 +25,12 @@ namespace itk
  * Constructor
  */
 LBFGSOptimizer::LBFGSOptimizer()
-{
-  m_OptimizerInitialized = false;
-  m_VnlOptimizer = nullptr;
-  m_Trace = false;
-  m_MaximumNumberOfFunctionEvaluations = 2000;
-  m_GradientConvergenceTolerance = 1e-5;
-  m_LineSearchAccuracy = 0.9;
-  m_DefaultStepLength = 1.0;
-}
+  : m_VnlOptimizer(nullptr)
+  , m_MaximumNumberOfFunctionEvaluations(2000)
+  , m_GradientConvergenceTolerance(1e-5)
+  , m_LineSearchAccuracy(0.9)
+  , m_DefaultStepLength(1.0)
+{}
 
 /**
  * Destructor
@@ -236,7 +233,7 @@ LBFGSOptimizer::StartOptimization()
   {
     // set current position to initial position and throw an exception
     this->SetCurrentPosition(currentPositionInternalValue);
-    itkExceptionMacro(<< "Error occurred in optimization");
+    itkExceptionMacro("Error occurred in optimization");
   }
 
   // we scale the vnlCompatibleParameters down if scales are defined
@@ -260,7 +257,7 @@ LBFGSOptimizer::GetOptimizer()
   return m_VnlOptimizer.get();
 }
 
-const std::string
+std::string
 LBFGSOptimizer::GetStopConditionDescription() const
 {
   m_StopConditionDescription.str("");
@@ -314,9 +311,7 @@ LBFGSOptimizer::GetStopConditionDescription() const
     }
     return m_StopConditionDescription.str();
   }
-  else
-  {
-    return std::string("");
-  }
+
+  return {};
 }
 } // end namespace itk

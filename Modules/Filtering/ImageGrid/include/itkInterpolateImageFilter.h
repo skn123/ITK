@@ -56,8 +56,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(InterpolateImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(InterpolateImageFilter);
 
   /** Inherit type alias from Superclass */
   using typename Superclass::InputImageType;
@@ -76,6 +76,7 @@ public:
   using InterpolatorType = InterpolateImageFunction<IntermediateImageType>;
 
   /** Set/Get the first image */
+  /** @ITKStartGrouping */
   void
   SetInput1(const InputImageType * image)
   {
@@ -86,7 +87,7 @@ public:
   {
     return this->GetInput();
   }
-
+  /** @ITKEndGrouping */
   /** Set/Get the second image */
   void
   SetInput2(const InputImageType * image);
@@ -96,15 +97,20 @@ public:
 
   /** Set/Get the distance from the first image from which to generate
    * interpolated image. The default value is 0.5 */
+  /** @ITKStartGrouping */
   itkSetClampMacro(Distance, double, 0.0, 1.0);
   itkGetConstMacro(Distance, double);
-
+  /** @ITKEndGrouping */
   /** Get/Set the interpolator function */
+  /** @ITKStartGrouping */
   itkSetObjectMacro(Interpolator, InterpolatorType);
   itkGetModifiableObjectMacro(Interpolator, InterpolatorType);
-
-  /** This method is used to set the state of the filter before
-   * multi-threading. */
+  /** @ITKEndGrouping */
+  /**
+   * Set up the state of the filter before multi-threading.
+   * InterpolatorType::SetInputImage is not thread-safe and hence
+   * has to be setup before ThreadedGenerateData.
+   */
   void
   BeforeThreadedGenerateData() override;
 
@@ -112,11 +118,7 @@ public:
   void
   AfterThreadedGenerateData() override;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   InterpolateImageFilter();

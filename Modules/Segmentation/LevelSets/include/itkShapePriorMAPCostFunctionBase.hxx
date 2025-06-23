@@ -24,11 +24,10 @@ namespace itk
 
 template <typename TFeatureImage, typename TOutputPixel>
 ShapePriorMAPCostFunctionBase<TFeatureImage, TOutputPixel>::ShapePriorMAPCostFunctionBase()
-{
-  m_ShapeFunction = nullptr;
-  m_ActiveRegion = nullptr;
-  m_FeatureImage = nullptr;
-}
+  : m_ShapeFunction(nullptr)
+  , m_ActiveRegion(nullptr)
+  , m_FeatureImage(nullptr)
+{}
 
 template <typename TFeatureImage, typename TOutputPixel>
 void
@@ -56,17 +55,17 @@ ShapePriorMAPCostFunctionBase<TFeatureImage, TOutputPixel>::Initialize()
 {
   if (!m_ShapeFunction)
   {
-    itkExceptionMacro(<< "ShapeFunction is not present.");
+    itkExceptionMacro("ShapeFunction is not present.");
   }
 
   if (!m_ActiveRegion)
   {
-    itkExceptionMacro(<< "ActiveRegion is not present.");
+    itkExceptionMacro("ActiveRegion is not present.");
   }
 
   if (!m_FeatureImage)
   {
-    itkExceptionMacro(<< "FeatureImage is not present.");
+    itkExceptionMacro("FeatureImage is not present.");
   }
 }
 } // end namespace itk

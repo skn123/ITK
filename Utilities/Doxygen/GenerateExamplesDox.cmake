@@ -10,14 +10,16 @@
 # referenced files.
 
 # glob the examples for each language
-file(GLOB_RECURSE examples_list_fullpath
+file(
+  GLOB_RECURSE examples_list_fullpath
   FOLLOW_SYMLINKS
   "${PROJECT_SOURCE_DIR}/Examples/*.cxx"
   "${PROJECT_SOURCE_DIR}/Examples/*.py"
   "${PROJECT_SOURCE_DIR}/Examples/*.java"
 )
 
-file(GLOB_RECURSE sphinx_examples_list_fullpath
+file(
+  GLOB_RECURSE sphinx_examples_list_fullpath
   "${PROJECT_SOURCE_DIR}/Modules/Remote/SphinxExamples/src/*.cxx"
   "${PROJECT_SOURCE_DIR}/Modules/Remote/SphinxExamples/src/*.py"
 )
@@ -46,8 +48,8 @@ file(APPEND ${OUTPUT_FILE} "/**\n")
 file(APPEND ${OUTPUT_FILE} " \n")
 
 foreach(f IN LISTS examples_list)
-  file(APPEND ${OUTPUT_FILE}  "\\example ${f}\n")
+  file(APPEND ${OUTPUT_FILE} "\\example ${f}\n")
 endforeach()
 
 # end comment
-file(APPEND ${OUTPUT_FILE}  "*/\n")
+file(APPEND ${OUTPUT_FILE} "*/\n")

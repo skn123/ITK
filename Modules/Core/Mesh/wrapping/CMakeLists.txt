@@ -1,6 +1,7 @@
 itk_wrap_module(ITKMesh)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkMeshBase
   itkMeshSource
   itkImageToMeshFilter

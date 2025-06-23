@@ -137,6 +137,7 @@ public:
 
   /** Default constructor. Needed since we provide a cast constructor. */
   ImageRandomConstIteratorWithIndex() = default;
+
   ~ImageRandomConstIteratorWithIndex() override = default;
 
   /** Constructor establishes an iterator to walk a particular image and a
@@ -171,14 +172,14 @@ public:
   }
 
   /** Is the iterator at the beginning of the region? */
-  bool
+  [[nodiscard]] bool
   IsAtBegin() const
   {
     return (m_NumberOfSamplesDone == 0L);
   }
 
   /** Is the iterator at the end of the region? */
-  bool
+  [[nodiscard]] bool
   IsAtEnd() const
   {
     return (m_NumberOfSamplesDone >= m_NumberOfSamplesRequested);
@@ -206,10 +207,16 @@ public:
 
   /** Set/Get number of random samples to extract from the image region. */
   void
-  SetNumberOfSamples(SizeValueType number);
+  SetNumberOfSamples(SizeValueType number)
+  {
+    m_NumberOfSamplesRequested = number;
+  }
 
-  SizeValueType
-  GetNumberOfSamples() const;
+  [[nodiscard]] SizeValueType
+  GetNumberOfSamples() const
+  {
+    return m_NumberOfSamplesRequested;
+  }
 
   /** Reinitialize the seed of the random number generator. */
   void

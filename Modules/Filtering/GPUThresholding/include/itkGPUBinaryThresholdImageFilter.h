@@ -37,7 +37,7 @@ public:
   {
     m_LowerThreshold = NumericTraits<TInput>::NonpositiveMin();
     m_UpperThreshold = NumericTraits<TInput>::max();
-    m_OutsideValue = NumericTraits<TOutput>::ZeroValue();
+    m_OutsideValue = TOutput{};
     m_InsideValue = NumericTraits<TOutput>::max();
   }
 
@@ -119,8 +119,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(GPUBinaryThresholdImageFilter, GPUUnaryFunctorImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(GPUBinaryThresholdImageFilter);
 
   /** Pixel types. */
   using InputPixelType = typename TInputImage::PixelType;
@@ -163,6 +163,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Class methods used to interface with the registered factories. */
+  /** @ITKStartGrouping */
   const char *
   GetITKSourceVersion() const override
   {
@@ -173,12 +174,13 @@ public:
   {
     return "A Factory for GPUBinaryThresholdImageFilter";
   }
+  /** @ITKEndGrouping */
 
   /** Method for class instantiation. */
   itkFactorylessNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(GPUBinaryThresholdImageFilterFactory, itk::ObjectFactoryBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(GPUBinaryThresholdImageFilterFactory);
 
   /** Register one factory of this type  */
   static void

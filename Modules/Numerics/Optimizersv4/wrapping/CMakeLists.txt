@@ -1,8 +1,9 @@
 itk_wrap_module(ITKOptimizersv4)
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkVnlTypes
-  itkLBFGSOptimizerBasev4
   itkLBFGSOptimizerBaseHelperv4
+  itkLBFGSOptimizerBasev4
   itkLBFGSBOptimizerv4
   itkLBFGSOptimizerv4
   itkAmoebaOptimizerv4

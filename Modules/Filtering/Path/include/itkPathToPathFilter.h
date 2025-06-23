@@ -49,8 +49,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(PathToPathFilter, PathSource);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PathToPathFilter);
 
   /** Some convenient type alias. */
   using InputPathType = TInputPath;
@@ -72,9 +72,8 @@ public:
   GetInput(unsigned int idx);
 
 protected:
-  PathToPathFilter();
+  PathToPathFilter() = default;
   ~PathToPathFilter() override = default;
-
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 

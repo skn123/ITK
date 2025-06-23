@@ -1,6 +1,7 @@
 itk_wrap_module(ITKThresholding)
 
-set(WRAPPER_SUBMODULE_ORDER
+set(
+  WRAPPER_SUBMODULE_ORDER
   itkHistogramThresholdCalculator
   itkHistogramThresholdImageFilter
 )

@@ -23,9 +23,7 @@
 #include "itkFEMElement2DMembrane.h"
 #include "ITKFEMExport.h"
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Element2DC0LinearQuadrilateralMembrane
@@ -67,8 +65,8 @@ public:
   /** Method for creation through the object factory. */
   itkSimpleNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Element2DC0LinearQuadrilateralMembrane, Element2DMembrane<Element2DC0LinearQuadrilateral>);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Element2DC0LinearQuadrilateralMembrane);
 
   /** CreateAnother method will clone the existing instance of this type,
    * including its internal member variables. */
@@ -95,7 +93,6 @@ protected:
   PrintSelf(std::ostream & os, Indent indent) const override;
 
 }; // class Element2DC0LinearQuadrilateralMembrane
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMElement2DC0LinearQuadrilateralMembrane_h

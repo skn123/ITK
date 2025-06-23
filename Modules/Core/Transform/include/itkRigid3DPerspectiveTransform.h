@@ -55,8 +55,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Rigid3DPerspectiveTransform, Transform);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Rigid3DPerspectiveTransform);
 
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro(Self);
@@ -173,7 +173,7 @@ public:
   }
 
   /** Return the Focal Distance */
-  double
+  [[nodiscard]] double
   GetFocalDistance() const
   {
     return m_FocalDistance;
@@ -191,7 +191,7 @@ public:
   OutputVectorType
   TransformVector(const InputVectorType &) const override
   {
-    itkExceptionMacro(<< "TransformVector(const InputVectorType &) is not implemented for Rigid3DPerspectiveTransform");
+    itkExceptionMacro("TransformVector(const InputVectorType &) is not implemented for Rigid3DPerspectiveTransform");
   }
 
   OutputVnlVectorType
@@ -206,8 +206,8 @@ public:
   OutputCovariantVectorType
   TransformCovariantVector(const InputCovariantVectorType &) const override
   {
-    itkExceptionMacro(<< "TransformCovariantVector(const InputCovariantVectorType &) is not implemented for "
-                         "Rigid3DPerspectiveTransform");
+    itkExceptionMacro("TransformCovariantVector(const InputCovariantVectorType &) is not implemented for "
+                      "Rigid3DPerspectiveTransform");
   }
 
   /** Return the rotation matrix */
@@ -236,13 +236,15 @@ public:
   using Superclass::ComputeJacobianWithRespectToPosition;
 
   /** Set a fixed offset: this allow to center the object to be transformed */
+  /** @ITKStartGrouping */
   itkGetConstReferenceMacro(FixedOffset, OffsetType);
   itkSetMacro(FixedOffset, OffsetType);
-
+  /** @ITKEndGrouping */
   /** Set the center of Rotation */
+  /** @ITKStartGrouping */
   itkSetMacro(CenterOfRotation, InputPointType);
   itkGetConstReferenceMacro(CenterOfRotation, InputPointType);
-
+  /** @ITKEndGrouping */
 protected:
   Rigid3DPerspectiveTransform();
   ~Rigid3DPerspectiveTransform() override = default;

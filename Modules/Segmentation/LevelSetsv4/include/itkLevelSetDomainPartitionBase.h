@@ -42,12 +42,13 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(LevelSetDomainPartitionBase, LightObject);
+  itkOverrideGetNameOfClassMacro(LevelSetDomainPartitionBase);
 
   /** Get/Set the number of level set functions */
+  /** @ITKStartGrouping */
   itkSetMacro(NumberOfLevelSetFunctions, IdentifierType);
   itkGetMacro(NumberOfLevelSetFunctions, IdentifierType);
-
+  /** @ITKEndGrouping */
   virtual void
   PopulateListDomain() = 0;
 

@@ -31,9 +31,7 @@
 #include <set>
 #include <vector>
 
-namespace itk
-{
-namespace fem
+namespace itk::fem
 {
 /**
  * \class Element
@@ -79,8 +77,8 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(Element, FEMLightObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(Element);
 
   /**
    * Floating point type used in all Element classes.
@@ -172,7 +170,7 @@ public:
     }
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(Node, FEMLightObject);
+    itkOverrideGetNameOfClassMacro(Node);
 
     /** CreateAnother method will clone the existing instance of this type,
      * including its internal member variables. */
@@ -723,7 +721,6 @@ protected:
   PrintSelf(std::ostream & os, Indent indent) const override;
 };
 
-} // end namespace fem
-} // end namespace itk
+} // namespace itk::fem
 
 #endif // itkFEMElementBase_h

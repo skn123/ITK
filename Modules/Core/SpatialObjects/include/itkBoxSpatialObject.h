@@ -52,7 +52,7 @@ public:
   using PointsContainerType = typename BoundingBoxType::PointsContainer;
 
   itkNewMacro(Self);
-  itkTypeMacro(BoxSpatialObject, SpatialObject);
+  itkOverrideGetNameOfClassMacro(BoxSpatialObject);
 
   /** Reset the spatial object to its initial condition, yet preserves
    *   Id, Parent, and Child information */
@@ -91,7 +91,7 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  typename LightObject::Pointer
+  [[nodiscard]] typename LightObject::Pointer
   InternalClone() const override;
 
 private:

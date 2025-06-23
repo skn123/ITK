@@ -21,6 +21,7 @@
 #include "itkAutoPointer.h"
 #include "itkMesh.h"
 #include "itkGeometricalQuadEdge.h"
+#include "itkCommonEnums.h"
 
 namespace itk
 {
@@ -61,7 +62,7 @@ public:
   using typename Superclass::CellRawPointer;
   using typename Superclass::CellConstRawPointer;
   using CellTraits = typename Superclass::CellTraits;
-  using typename Superclass::CoordRepType;
+  using typename Superclass::CoordinateType;
   using typename Superclass::InterpolationWeightType;
   using typename Superclass::PointIdentifier;
   using typename Superclass::CellIdentifier;
@@ -78,7 +79,7 @@ public:
   /** Multivisitor type. */
   using MultiVisitor = typename CellType::MultiVisitor;
 
-  //** */
+  /** */
   using PointIdIterator = typename CellTraits::PointIdIterator;
   using PointIdConstIterator = typename CellTraits::PointIdConstIterator;
   using PointIdInternalIterator = typename CellTraits::PointIdInternalIterator;
@@ -93,8 +94,8 @@ public:
   using QEDual = typename QEType::DualType;
 
 public:
-  /** Standard part of every itk Object. */
-  itkTypeMacro(QuadEdgeMeshLineCell, TCellInterface);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(QuadEdgeMeshLineCell);
 
   // accessor to the new QEGeom link that replaces now inheritance.
   QEType *
@@ -105,8 +106,10 @@ public:
 
 public:
   /** Object memory management methods. */
+  /** @ITKStartGrouping */
   QuadEdgeMeshLineCell();
   ~QuadEdgeMeshLineCell() override;
+  /** @ITKEndGrouping */
 
   /** Accessors for m_Identifier. */
   void

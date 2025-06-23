@@ -106,7 +106,7 @@ public:
   using ImageType = TImage;
 
   /** PixelContainer type alias support Used to refer to the container for
-   * the pixel data. While this was already typdef'ed in the superclass
+   * the pixel data. While this was already typedef'ed in the superclass
    * it needs to be redone here for this subclass to compile properly with gcc. */
   using PixelContainer = typename TImage::PixelContainer;
   using PixelContainerPointer = typename PixelContainer::Pointer;
@@ -130,8 +130,8 @@ public:
   /** Path ND Output Type, which is not necessarily an index type */
   using PathOutputType = typename PathType::OutputType;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacroNoParent(PathConstIterator);
+  /** \see LightObject::GetNameOfClass() */
+  itkVirtualGetNameOfClassMacro(PathConstIterator);
 
   /** Get the dimension (size) of the index. */
   static unsigned int
@@ -155,7 +155,7 @@ public:
   }
 
   /** Get the pixel value */
-  const PixelType &
+  [[nodiscard]] const PixelType &
   Get() const
   {
     return m_Image->GetPixel(m_CurrentImageIndex);
@@ -164,7 +164,7 @@ public:
   /** Is the iterator at the end of the path?
    * Note that for a closed path, it may be possible to increment back to the
    * start of the path. */
-  bool
+  [[nodiscard]] bool
   IsAtEnd() const
   {
     return m_IsAtEnd;

@@ -57,8 +57,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Method for creation through the object factory. */
-  itkTypeMacro(PointBasedSpatialObject, SpatialObject);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PointBasedSpatialObject);
 
   /** Reset the spatial object to its initial condition, yet preserves
    *   Id, Parent, and Child information */
@@ -107,7 +107,7 @@ public:
   }
 
   /** Return the number of points in the list */
-  virtual SizeValueType
+  [[nodiscard]] virtual SizeValueType
   GetNumberOfPoints() const
   {
     return static_cast<SizeValueType>(m_Points.size());
@@ -145,7 +145,7 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  typename LightObject::Pointer
+  [[nodiscard]] typename LightObject::Pointer
   InternalClone() const override;
 };
 } // end namespace itk

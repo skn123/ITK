@@ -27,10 +27,9 @@ namespace itk
 template <typename TFixedImage, typename TMovingImage, typename TDisplacementField>
 DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::DemonsRegistrationFunction()
 {
-  RadiusType   r;
-  unsigned int j;
+  RadiusType r;
 
-  for (j = 0; j < ImageDimension; ++j)
+  for (unsigned int j = 0; j < ImageDimension; ++j)
   {
     r[j] = 0;
   }
@@ -112,7 +111,7 @@ DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::Initi
 {
   if (!this->GetMovingImage() || !this->GetFixedImage() || !m_MovingImageInterpolator)
   {
-    itkExceptionMacro(<< "MovingImage, FixedImage and/or Interpolator not set");
+    itkExceptionMacro("MovingImage, FixedImage and/or Interpolator not set");
   }
 
   // cache fixed image information
@@ -125,7 +124,7 @@ DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::Initi
   {
     m_Normalizer += fixedImageSpacing[k] * fixedImageSpacing[k];
   }
-  m_Normalizer /= static_cast<double>(ImageDimension);
+  m_Normalizer /= double{ ImageDimension };
 
   // setup gradient calculator
   m_FixedImageGradientCalculator->SetInputImage(this->GetFixedImage());
@@ -141,11 +140,11 @@ DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::Initi
 }
 
 template <typename TFixedImage, typename TMovingImage, typename TDisplacementField>
-typename DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::PixelType
+auto
 DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::ComputeUpdate(
   const NeighborhoodType & it,
   void *                   gd,
-  const FloatOffsetType &  itkNotUsed(offset))
+  const FloatOffsetType &  itkNotUsed(offset)) -> PixelType
 {
   // Get fixed image related information
   // Note: no need to check the index is within
@@ -162,7 +161,7 @@ DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::Compu
     mappedPoint[j] += it.GetCenterPixel()[j];
   }
 
-  double movingValue;
+  double movingValue = NAN;
   if (m_MovingImageInterpolator->IsInsideBuffer(mappedPoint))
   {
     movingValue = m_MovingImageInterpolator->Evaluate(mappedPoint);
@@ -235,9 +234,9 @@ template <typename TFixedImage, typename TMovingImage, typename TDisplacementFie
 void
 DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::ReleaseGlobalDataPointer(void * gd) const
 {
-  auto * globalData = (GlobalDataStruct *)gd;
+  const std::unique_ptr<const GlobalDataStruct> globalData(static_cast<GlobalDataStruct *>(gd));
 
-  m_MetricCalculationLock.lock();
+  const std::lock_guard<std::mutex> lockGuard(m_MetricCalculationMutex);
   m_SumOfSquaredDifference += globalData->m_SumOfSquaredDifference;
   m_NumberOfPixelsProcessed += globalData->m_NumberOfPixelsProcessed;
   m_SumOfSquaredChange += globalData->m_SumOfSquaredChange;
@@ -246,9 +245,6 @@ DemonsRegistrationFunction<TFixedImage, TMovingImage, TDisplacementField>::Relea
     m_Metric = m_SumOfSquaredDifference / static_cast<double>(m_NumberOfPixelsProcessed);
     m_RMSChange = std::sqrt(m_SumOfSquaredChange / static_cast<double>(m_NumberOfPixelsProcessed));
   }
-  m_MetricCalculationLock.unlock();
-
-  delete globalData;
 }
 } // end namespace itk
 

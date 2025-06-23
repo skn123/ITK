@@ -34,9 +34,7 @@
 #include "itkMath.h"
 #include "itkTotalProgressReporter.h"
 
-namespace itk
-{
-namespace Testing
+namespace itk::Testing
 {
 
 template <typename TInputImage, typename TOutputImage>
@@ -44,7 +42,7 @@ StretchIntensityImageFilter<TInputImage, TOutputImage>::StretchIntensityImageFil
   : m_Scale(1.0)
   , m_Shift(0.0)
   , m_InputMinimum(NumericTraits<InputPixelType>::max())
-  , m_InputMaximum(NumericTraits<InputPixelType>::ZeroValue())
+  , m_InputMaximum(InputPixelType{})
   , m_OutputMinimum(NumericTraits<OutputPixelType>::NonpositiveMin())
   , m_OutputMaximum(NumericTraits<OutputPixelType>::max())
 {
@@ -58,7 +56,7 @@ StretchIntensityImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
 {
   if (m_OutputMinimum > m_OutputMaximum)
   {
-    itkExceptionMacro(<< "Minimum output value cannot be greater than Maximum output value.");
+    itkExceptionMacro("Minimum output value cannot be greater than Maximum output value.");
   }
 
   const TInputImage * inputImage = this->GetInput();
@@ -105,13 +103,10 @@ StretchIntensityImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateD
 
   TotalProgressReporter progress(this, outputPtr->GetRequestedRegion().GetNumberOfPixels());
 
-  InputImageRegionType inputRegionForThread = outputRegionForThread;
+  const InputImageRegionType inputRegionForThread = outputRegionForThread;
 
   ImageRegionConstIterator<TInputImage> inputIt(inputPtr, inputRegionForThread);
   ImageRegionIterator<TOutputImage>     outputIt(outputPtr, outputRegionForThread);
-
-  inputIt.GoToBegin();
-  outputIt.GoToBegin();
 
   while (!inputIt.IsAtEnd())
   {
@@ -166,7 +161,6 @@ StretchIntensityImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream &
   os << indent << "Output Maximum: " << static_cast<typename NumericTraits<OutputPixelType>::PrintType>(m_OutputMaximum)
      << std::endl;
 }
-} // end namespace Testing
-} // end namespace itk
+} // namespace itk::Testing
 
 #endif

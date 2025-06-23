@@ -120,8 +120,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(MultiResolutionPyramidImageFilter, ImageToImageFilter);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(MultiResolutionPyramidImageFilter);
 
   /** ScheduleType type alias support */
   using ScheduleType = Array2D<unsigned int>;
@@ -172,7 +172,7 @@ public:
   SetStartingShrinkFactors(const unsigned int * factors);
 
   /** Get the starting shrink factors */
-  const unsigned int *
+  [[nodiscard]] const unsigned int *
   GetStartingShrinkFactors() const;
 
   /** Test if the schedule is downward divisible. This method returns true if
@@ -213,12 +213,8 @@ public:
   itkGetConstMacro(UseShrinkImageFilter, bool);
   itkBooleanMacro(UseShrinkImageFilter);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<typename TOutputImage::PixelType>));
-  // End concept checking
-#endif
 
 protected:
   MultiResolutionPyramidImageFilter();

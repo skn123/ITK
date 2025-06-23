@@ -25,9 +25,8 @@ namespace itk
 {
 template <typename TImage>
 MergeLabelMapFilter<TImage>::MergeLabelMapFilter()
-{
-  this->m_Method = ChoiceMethodEnum::KEEP;
-}
+  : m_Method(ChoiceMethodEnum::KEEP)
+{}
 
 template <typename TImage>
 void
@@ -60,7 +59,7 @@ MergeLabelMapFilter<TImage>::GenerateData()
     }
     default:
     {
-      itkExceptionMacro(<< "No such method: " << this->m_Method);
+      itkExceptionMacro("No such method: " << this->m_Method);
     }
   }
 }
@@ -81,8 +80,8 @@ MergeLabelMapFilter<TImage>::MergeWithKeep()
     typename ImageType::ConstIterator it2(this->GetInput(i));
     while (!it2.IsAtEnd())
     {
-      const LabelObjectType * lo = it2.GetLabelObject();
-      LabelObjectPointer      newLo = LabelObjectType::New();
+      const LabelObjectType *  lo = it2.GetLabelObject();
+      const LabelObjectPointer newLo = LabelObjectType::New();
       newLo->template CopyAllFrom<LabelObjectType>(lo);
 
       if ((output->GetBackgroundValue() != newLo->GetLabel()) && (!output->HasLabel(newLo->GetLabel())))
@@ -124,8 +123,8 @@ MergeLabelMapFilter<TImage>::MergeWithStrict()
     typename ImageType::ConstIterator it2(this->GetInput(i));
     while (!it2.IsAtEnd())
     {
-      const LabelObjectType * lo = it2.GetLabelObject();
-      LabelObjectPointer      newLo = LabelObjectType::New();
+      const LabelObjectType *  lo = it2.GetLabelObject();
+      const LabelObjectPointer newLo = LabelObjectType::New();
       newLo->template CopyAllFrom<LabelObjectType>(lo);
 
       if (output->GetBackgroundValue() != newLo->GetLabel())
@@ -137,14 +136,14 @@ MergeLabelMapFilter<TImage>::MergeWithStrict()
         }
         else
         {
-          itkExceptionMacro(<< "Label "
-                            << static_cast<typename itk::NumericTraits<PixelType>::PrintType>(newLo->GetLabel())
-                            << " from input " << i << " is already in use.");
+          itkExceptionMacro(
+            "Label " << static_cast<typename itk::NumericTraits<PixelType>::PrintType>(newLo->GetLabel())
+                     << " from input " << i << " is already in use.");
         }
       }
       else
       {
-        itkGenericExceptionMacro(<< "Label "
+        itkGenericExceptionMacro("Label "
                                  << static_cast<typename itk::NumericTraits<PixelType>::PrintType>(newLo->GetLabel())
                                  << " from input " << i << " is output background value.");
       }
@@ -171,11 +170,11 @@ MergeLabelMapFilter<TImage>::MergeWithAggregate()
     {
       const LabelObjectType * lo = it2.GetLabelObject();
 
-      bool hasLabel = output->HasLabel(lo->GetLabel());
+      const bool hasLabel = output->HasLabel(lo->GetLabel());
       if (!hasLabel && (lo->GetLabel() != output->GetBackgroundValue()))
       {
         // we can keep the label
-        LabelObjectPointer newLo = LabelObjectType::New();
+        const LabelObjectPointer newLo = LabelObjectType::New();
         newLo->template CopyAllFrom<LabelObjectType>(lo);
         output->AddLabelObject(newLo);
       }
@@ -235,8 +234,8 @@ MergeLabelMapFilter<TImage>::MergeWithPack()
     typename ImageType::ConstIterator it2(this->GetInput(i));
     while (!it2.IsAtEnd())
     {
-      const LabelObjectType * lo = it2.GetLabelObject();
-      LabelObjectPointer      newLo = LabelObjectType::New();
+      const LabelObjectType *  lo = it2.GetLabelObject();
+      const LabelObjectPointer newLo = LabelObjectType::New();
       newLo->template CopyAllFrom<LabelObjectType>(lo);
       output->PushLabelObject(newLo);
 

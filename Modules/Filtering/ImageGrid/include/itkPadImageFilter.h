@@ -73,27 +73,27 @@ public:
   using OutputImageSizeType = typename TOutputImage::SizeType;
   using InputImageSizeType = typename TInputImage::SizeType;
   using SizeType = typename TInputImage::SizeType;
-  using SizeValueType = typename TInputImage::SizeValueType;
+  using SizeValueType = itk::SizeValueType;
 
   /** Typedef to describe the boundary condition. */
   using BoundaryConditionType = ImageBoundaryCondition<TInputImage, TOutputImage>;
-  using BoundaryConditionPointerType = BoundaryConditionType *;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(PadImageFilter, PadImageFilterBase);
+  /** \see LightObject::GetNameOfClass() */
+  itkOverrideGetNameOfClassMacro(PadImageFilter);
 
   /** ImageDimension enumeration. */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Set/Get the output image padding.  Default is no padding
    *  (same as input). */
+  /** @ITKStartGrouping */
   itkSetMacro(PadLowerBound, SizeType);
   itkSetMacro(PadUpperBound, SizeType);
   itkGetConstReferenceMacro(PadLowerBound, SizeType);
   itkGetConstReferenceMacro(PadUpperBound, SizeType);
   itkSetVectorMacro(PadLowerBound, const SizeValueType, ImageDimension);
   itkSetVectorMacro(PadUpperBound, const SizeValueType, ImageDimension);
-
+  /** @ITKEndGrouping */
   void
   SetPadBound(const InputImageSizeType & bound)
   {
